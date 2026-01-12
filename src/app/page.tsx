@@ -6,12 +6,14 @@ import CountdownTimer from "@/components/CountdownTimer";
 
 import FlowChart from "@/components/FlowChart";
 import OnboardingModal from "@/components/OnboardingModal";
+import WaitingCenter from "@/components/WaitingCenter";
 import { useRouter } from "next/navigation";
 
 export default function WelcomePage() {
     const router = useRouter();
     const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
     const [isAuthenticating, setIsAuthenticating] = useState(false);
+    const [userSession, setUserSession] = useState<any>(null);
 
     // Set global launch goal to 30 days from now
     const thirtyDaysLater = new Date();
@@ -27,19 +29,25 @@ export default function WelcomePage() {
     };
 
     const handleOnboardingComplete = (userData: any) => {
-        // Save to session locally (optional)
+        setUserSession(userData);
         localStorage.setItem('user_session', JSON.stringify(userData));
-
         setIsOnboardingOpen(false);
+    };
 
+    const goToDapp = () => {
+        if (!userSession) return;
         // Determine the redirect base URL (local vs prod)
         const isLocal = window.location.hostname === 'localhost';
         const dappBase = isLocal ? 'http://localhost:3000' : 'https://trenches-web.vercel.app';
 
         // Pass session data via query parameter for cross-origin handoff
-        const sessionData = encodeURIComponent(JSON.stringify(userData));
+        const sessionData = encodeURIComponent(JSON.stringify(userSession));
         window.location.href = `${dappBase}/dashboard?session=${sessionData}`;
     };
+
+    if (userSession) {
+        return <WaitingCenter userSession={userSession} onGoToDapp={goToDapp} />;
+    }
 
     return (
         <main className={styles.container}>
