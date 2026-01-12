@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import BottomNav from "@/components/BottomNav";
-import RiskBanner from "@/components/RiskBanner";
+
 
 export const metadata: Metadata = {
   title: "Trenches: Spray & Pray",
@@ -17,8 +16,6 @@ export default function RootLayout({
     <html lang="en">
       <body className="antialiased">
         {children}
-        <RiskBanner />
-        <BottomNav />
       </body>
     </html>
   );
