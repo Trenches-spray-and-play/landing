@@ -1,42 +1,295 @@
 .container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: var(--spacing-md);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+    min-height: 100vh;
+    background-color: #050505;
+    color: #fff;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overflow-x: hidden;
 }
 
 .header {
-  margin-bottom: var(--spacing-xl);
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: var(--spacing-md);
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .logo {
-  font-family: var(--font-mono);
-  font-size: 1.5rem;
-  font-weight: 800;
-  letter-spacing: -1px;
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-xs);
+    font-size: 1.5rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 800;
+    letter-spacing: 0.3rem;
+    margin: 0;
+    color: #fff;
 }
 
-.tagline {
-  color: var(--text-muted);
-  font-size: 0.9rem;
+.statusLine {
+    font-size: 0.6rem;
+    color: var(--accent-color, #00ff00);
+    font-family: 'Courier New', Courier, monospace;
+    letter-spacing: 0.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.pulse {
+    width: 6px;
+    height: 6px;
+    background-color: var(--accent-color, #00ff00);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--accent-color, #00ff00);
+    animation: pulse 1.5s infinite;
+}
+
+.believersCount {
+    font-size: 0.8rem;
+    color: #888;
+    letter-spacing: 0.05rem;
+    margin-top: 0.5rem;
+}
+
+.count {
+    color: var(--accent-color, #00ff00);
+    font-weight: bold;
+}
+
+.heroStatusBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 1s ease-out;
+    margin-bottom: 0.5rem;
+}
+
+.heroSection {
+    padding: 2rem 2rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.mainHeadline {
+    font-size: 6rem;
+    font-weight: 900;
+    margin: 0;
+    letter-spacing: -0.2rem;
+    line-height: 0.9;
+    background: linear-gradient(180deg, #fff 0%, #444 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subHeadline {
+    font-size: 1.25rem;
+    color: #fff;
+    max-width: 600px;
+    margin: 1rem auto 0;
+    line-height: 1.4;
+}
+
+.ctaGroup {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.enlistBtn {
+    background: transparent;
+    color: var(--accent-color, #00ff00);
+    border: 1px solid var(--accent-color, #00ff00);
+    padding: 1.25rem 3rem;
+    font-size: 1.2rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.1);
+}
+
+.enlistBtn:hover {
+    background: var(--accent-color, #00ff00);
+    color: #000;
+    transform: scale(1.05);
+    box-shadow: 0 0 40px rgba(0, 255, 0, 0.3);
+}
+
+.section {
+    padding: 4rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .sectionTitle {
-  font-family: var(--font-mono);
-  font-size: 1rem;
-  color: var(--text-secondary);
-  margin-bottom: var(--spacing-md);
-  text-transform: uppercase;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.05rem;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    opacity: 1;
 }
 
-.grid {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
+.useCaseGrid,
+.mechanicGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.useCaseCard,
+.mechanicCard {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 2.5rem;
+    border-radius: 4px;
+    transition: border-color 0.3s;
+}
+
+.useCaseCard:hover,
+.mechanicCard:hover {
+    border-color: rgba(0, 255, 0, 0.2);
+}
+
+.useCaseCard h4,
+.mechanicCard .cardHeader {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    color: #fff;
+    letter-spacing: 0.1rem;
+}
+
+.useCaseCard p,
+.mechanicCard p {
+    font-size: 0.95rem;
+    color: #777;
+    line-height: 1.6;
+}
+
+.mechanicCard .cardHeader {
+    color: var(--accent-color, #00ff00);
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+}
+
+.footer {
+    padding: 3rem 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.footerLine {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.7rem;
+    color: #444;
+    letter-spacing: 0.2rem;
+}
+
+.footerLinks {
+    display: flex;
+    gap: 2rem;
+}
+
+.footerLinks a {
+    color: #666;
+    text-decoration: none;
+    font-size: 0.8rem;
+    letter-spacing: 0.1rem;
+    transition: color 0.2s;
+}
+
+.footerLinks a:hover {
+    color: var(--accent-color, #00ff00);
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.4;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.4;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .mainHeadline {
+        font-size: 3rem;
+        letter-spacing: -0.1rem;
+    }
+
+    .header {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 0.75rem;
+        text-align: center;
+    }
+
+    .heroSection {
+        padding: 1.5rem 1.5rem;
+        gap: 1.5rem;
+    }
+
+    .subHeadline {
+        font-size: 1.1rem;
+        margin: 1rem auto 0;
+        line-height: 1.4;
+    }
+
+    .ctaGroup {
+        margin-top: 1.5rem;
+        gap: 1.25rem;
+    }
+
+    .enlistBtn {
+        padding: 1.1rem 2rem;
+        font-size: 1.1rem;
+        width: 100%;
+        max-width: 280px;
+    }
+
+    .avatarStack {
+        justify-content: center;
+    }
+
+    .section {
+        padding: 3rem 1.5rem;
+    }
+
+    .sectionTitle {
+        margin-bottom: 2rem;
+        font-size: 0.85rem;
+    }
+
+    .useCaseCard,
+    .mechanicCard {
+        padding: 1.5rem;
+    }
 }
