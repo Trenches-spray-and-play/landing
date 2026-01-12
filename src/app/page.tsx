@@ -27,12 +27,18 @@ export default function WelcomePage() {
     };
 
     const handleOnboardingComplete = (userData: any) => {
-        // Save to session (optional, mainly for dapp)
+        // Save to session locally (optional)
         localStorage.setItem('user_session', JSON.stringify(userData));
 
         setIsOnboardingOpen(false);
-        // Redirect to the actual Dapp
-        window.location.href = 'https://trenches-web.vercel.app/';
+
+        // Determine the redirect base URL (local vs prod)
+        const isLocal = window.location.hostname === 'localhost';
+        const dappBase = isLocal ? 'http://localhost:3000' : 'https://trenches-web.vercel.app';
+
+        // Pass session data via query parameter for cross-origin handoff
+        const sessionData = encodeURIComponent(JSON.stringify(userData));
+        window.location.href = `${dappBase}/dashboard?session=${sessionData}`;
     };
 
     return (
