@@ -34,6 +34,11 @@ export default function WelcomePage() {
         setIsOnboardingOpen(false);
     };
 
+    const handleLogout = () => {
+        setUserSession(null);
+        localStorage.removeItem('user_session');
+    };
+
     const goToDapp = () => {
         if (!userSession) return;
         // Determine the redirect base URL (local vs prod)
@@ -46,7 +51,7 @@ export default function WelcomePage() {
     };
 
     if (userSession) {
-        return <WaitingCenter userSession={userSession} onGoToDapp={goToDapp} />;
+        return <WaitingCenter userSession={userSession} onGoToDapp={goToDapp} onLogout={handleLogout} />;
     }
 
     return (

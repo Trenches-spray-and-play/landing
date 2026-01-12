@@ -6,9 +6,10 @@ import CountdownTimer from './CountdownTimer';
 interface WaitingCenterProps {
     userSession: any;
     onGoToDapp?: () => void;
+    onLogout?: () => void;
 }
 
-export default function WaitingCenter({ userSession, onGoToDapp }: WaitingCenterProps) {
+export default function WaitingCenter({ userSession, onGoToDapp, onLogout }: WaitingCenterProps) {
     const getDeploymentTime = () => {
         const date = new Date();
         date.setDate(date.getDate() + 29);
@@ -17,6 +18,15 @@ export default function WaitingCenter({ userSession, onGoToDapp }: WaitingCenter
 
     return (
         <main className={styles.container}>
+            <div className={styles.topBar}>
+                <h1 className={styles.logo}>TRENCHES__</h1>
+                {onLogout && (
+                    <button className={styles.logoutBtn} onClick={onLogout}>
+                        [ LOGOUT ]
+                    </button>
+                )}
+            </div>
+
             <header className={styles.header}>
                 <div className={styles.userInfo}>
                     <h1 className={styles.title}>WAITING CENTER</h1>
