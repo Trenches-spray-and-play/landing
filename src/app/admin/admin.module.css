@@ -1,0 +1,97 @@
+.container {
+    padding: var(--spacing-lg);
+    background: var(--bg-color);
+    min-height: 100vh;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--spacing-md);
+}
+
+.title {
+    font-family: var(--font-mono);
+    color: var(--accent-rapid);
+}
+
+.exitLink {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.statsRow {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+.kpiCard {
+    background: var(--bg-secondary);
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.kpiLabel {
+    font-family: var(--font-mono);
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+    margin-bottom: 8px;
+}
+
+.kpiValue {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.sectionTitle {
+    font-family: var(--font-mono);
+    margin-bottom: var(--spacing-md);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.tableWrapper {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+}
+
+.table th {
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid var(--text-muted);
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+.table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.actionBtn {
+    background: transparent;
+    border: 1px solid var(--accent-rapid);
+    color: var(--accent-rapid);
+    padding: 4px 8px;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    font-size: 0.7rem;
+}
+
+.actionBtn:hover {
+    background: rgba(255, 46, 0, 0.1);
+}
