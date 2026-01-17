@@ -45,7 +45,7 @@ export default function WaitingCenter({ userSession, onGoToDapp, onLogout }: Wai
                         <div className={styles.cardSub}>BELIEVERS AHEAD OF YOU</div>
                     </div>
                     <div className={styles.dossierCard}>
-                        <div className={styles.cardLabel}>DEPLOYMENT WINDOW</div>
+                        <div className={styles.cardLabel}>SPRAY WINDOW</div>
                         <div className={styles.timerWrapper}>
                             <CountdownTimer
                                 targetDate={getDeploymentTime()}
@@ -75,7 +75,7 @@ export default function WaitingCenter({ userSession, onGoToDapp, onLogout }: Wai
             </section>
 
             <div className={styles.emptyState}>
-                <h3 className={styles.noActiveTitle}>NO ACTIVE DEPLOYMENTS</h3>
+                <h3 className={styles.noActiveTitle}>NO ACTIVE SPRAYS</h3>
                 <p className={styles.emptyDesc}>You are currently in the reserve. Spray into an active trench once deployment begins.</p>
 
                 {onGoToDapp && (
@@ -86,7 +86,7 @@ export default function WaitingCenter({ userSession, onGoToDapp, onLogout }: Wai
             </div>
 
             <footer className={styles.footer}>
-                <p>WAILIST PROTOCOL ACTIVE // ENLISTED: {userSession?.joinedAt}</p>
+                <p>WAITLIST PROTOCOL ACTIVE // SIGNED UP: {userSession?.joinedAt}</p>
             </footer>
         </main>
     );

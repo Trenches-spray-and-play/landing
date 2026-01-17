@@ -8,6 +8,7 @@ import FlowChart from "@/components/FlowChart";
 import OnboardingModal from "@/components/OnboardingModal";
 import WaitingCenter from "@/components/WaitingCenter";
 import { useRouter } from "next/navigation";
+import Logo from "@/components/Logo";
 
 export default function WelcomePage() {
     const router = useRouter();
@@ -19,7 +20,7 @@ export default function WelcomePage() {
     const thirtyDaysLater = new Date();
     thirtyDaysLater.setDate(thirtyDaysLater.getDate() + 30);
 
-    const handleEnlist = () => {
+    const handleSignUp = () => {
         setIsAuthenticating(true);
         // Simulate X Authentication
         setTimeout(() => {
@@ -43,7 +44,7 @@ export default function WelcomePage() {
         if (!userSession) return;
         // Determine the redirect base URL (local vs prod)
         const isLocal = window.location.hostname === 'localhost';
-        const dappBase = isLocal ? 'http://localhost:3000' : 'https://trenches-web.vercel.app';
+        const dappBase = isLocal ? 'http://localhost:3001' : 'https://trenches-web.vercel.app';
 
         // Pass session data via query parameter for cross-origin handoff
         const sessionData = encodeURIComponent(JSON.stringify(userSession));
@@ -58,7 +59,7 @@ export default function WelcomePage() {
         <main className={styles.container}>
             {/* Header / Logo */}
             <header className={styles.header}>
-                <h1 className={styles.logo}>TRENCHES__</h1>
+                <Logo variant="horizontal" width={240} />
             </header>
 
             {/* Section 1: Hero */}
@@ -72,7 +73,7 @@ export default function WelcomePage() {
                     <div className={styles.ctaGroup}>
                         <div className={styles.heroStatusBox}>
                             <div className={styles.statusLine}>
-                                <span className={styles.pulse}></span> ONLINE_DEPLOYMENT_ACTIVE
+                                <span className={styles.pulse}></span> ONLINE_SPRAY_PROTOCOL_ACTIVE
                             </div>
                             <div className={styles.believersCount}>
                                 <span className={styles.count}>12,405</span> BELIEVERS CURRENTLY IN THE TRENCHES
@@ -80,10 +81,10 @@ export default function WelcomePage() {
                         </div>
                         <button
                             className={styles.enlistBtn}
-                            onClick={handleEnlist}
+                            onClick={handleSignUp}
                             disabled={isAuthenticating}
                         >
-                            {isAuthenticating ? 'AUTHENTICATING...' : '[ ENLIST VIA X ]'}
+                            {isAuthenticating ? 'AUTHENTICATING...' : '[ SIGN UP WITH X ]'}
                         </button>
                     </div>
                 </div>

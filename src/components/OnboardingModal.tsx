@@ -68,7 +68,7 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
                                 <span className={styles.missionText}>FOLLOW AND COMMENT ON POST</span>
                             </a>
                         </div>
-                        <button className={styles.nextBtn} onClick={handleSocialMissions}>CONTINUE ENLISTMENT</button>
+                        <button className={styles.nextBtn} onClick={handleSocialMissions}>CONTINUE REGISTRATION</button>
                     </div>
                 )}
 
@@ -107,15 +107,15 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
                 {step === 3 && (
                     <div className={styles.content}>
                         <h2 className={styles.title}>CONGRATULATIONS</h2>
-                        <p className={styles.descText}>You have been drafted. To finalize your spot, announce your deployment and submit the link.</p>
+                        <p className={styles.descText}>You have been approved. To finalize your spot, announce your entry and submit the link.</p>
 
                         <div className={styles.verificationBox}>
                             <a
-                                href="https://x.com/intent/tweet?text=Just%20enlisted%20in%20the%20@Trenches%20deployment%20queue.%20Position%20%231205.%20Spray%20and%20Pray!"
+                                href="https://x.com/intent/tweet?text=Just%20signed%20up%20for%20the%20@Trenches%20waiting%20queue.%20Position%20%231205.%20Spray%20and%20Pray!"
                                 className={styles.tweetBtn}
                                 target="_blank"
                             >
-                                𝕏 POST DEPLOYMENT STATUS
+                                𝕏 POST ENTRY STATUS
                             </a>
                         </div>
 
@@ -131,7 +131,7 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
                                     required
                                 />
                             </div>
-                            <button type="submit" className={styles.finalizeBtn}>FINALIZE ENLISTMENT</button>
+                            <button type="submit" className={styles.finalizeBtn}>FINALIZE REGISTRATION</button>
                         </form>
                     </div>
                 )}

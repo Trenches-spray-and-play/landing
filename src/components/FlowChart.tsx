@@ -27,7 +27,7 @@ export default function FlowChart() {
                             <div className={styles.userBoxSmall}>USER B</div>
                             <div className={styles.userBoxSmall}>USER C</div>
                         </div>
-                        <div className={styles.actionArrow}>⬇ ENLISTING</div>
+                        <div className={styles.actionArrow}>⬇ JOINING</div>
                         <div className={styles.queueBox}>BUILDING LIQUIDITY</div>
                     </div>
                     <p className={styles.desc}>User B and User C join the queue.</p>
