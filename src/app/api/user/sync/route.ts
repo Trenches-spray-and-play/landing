@@ -70,7 +70,27 @@ export async function POST(request: Request) {
 
     try {
         const body = await request.json();
-        const { handle, email, walletSol, walletEvm, referralCode } = body;
+        const { handle, email, walletSol, walletEvm, referralCode, captchaToken } = body;
+
+        // 1. Verify Captcha
+        const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
+        if (turnstileSecret && captchaToken) {
+            const formData = new FormData();
+            formData.append('secret', turnstileSecret);
+            formData.append('response', captchaToken);
+
+            const result = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const outcome = await result.json();
+            if (!outcome.success) {
+                return NextResponse.json({ error: 'Invalid captcha' }, { status: 400 });
+            }
+        } else if (process.env.NODE_ENV === 'production' && !captchaToken) {
+            return NextResponse.json({ error: 'Captcha required' }, { status: 400 });
+        }
 
         // Check if user already exists
         let user = await prisma.user.findUnique({

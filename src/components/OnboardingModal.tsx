@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import styles from './OnboardingModal.module.css';
 import { Check } from 'lucide-react';
+import Turnstile from './Turnstile';
 
 interface PlatformConfig {
     telegramUrl: string;
@@ -31,6 +32,7 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
 
     // Step 4: Verification
     const [verificationLink, setVerificationLink] = useState('');
+    const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
     // Persistence helper
     const STORAGE_KEY = 'trenches_onboarding_state';
@@ -73,7 +75,7 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
     // Config values with fallbacks
     const telegramUrl = config?.telegramUrl || 'https://t.me/trenchesprotocol';
     const twitterUrl = config?.twitterUrl || 'https://x.com/traboraofficial';
-    const tweetText = encodeURIComponent(config?.onboardingTweetText || 'Just enlisted in the @traboraofficial deployment queue. Spray and Pray! 🔫\n\nhttps://trenches.play');
+    const tweetText = encodeURIComponent(config?.onboardingTweetText || 'Just enlisted in the @traboraofficial deployment queue. Spray and Play! 🔫\n\nhttps://playtrenches.xyz');
 
     const handleSocialMissions = () => setStep(2);
 
@@ -102,6 +104,7 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
                     walletSol: solAddress,
                     // Handle will be generated/updated in backend if not provided
                     verificationLink,
+                    captchaToken,
                 }),
             });
             const data = await res.json();
@@ -232,7 +235,10 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
                                     required
                                 />
                             </div>
-                            <button type="submit" className={styles.finalizeBtn} disabled={isSyncing}>
+
+                            <Turnstile onVerify={(token) => setCaptchaToken(token)} />
+
+                            <button type="submit" className={styles.finalizeBtn} disabled={isSyncing || !captchaToken}>
                                 {isSyncing ? 'FINALIZING...' : 'FINALIZE ENLISTMENT'}
                             </button>
                         </form>

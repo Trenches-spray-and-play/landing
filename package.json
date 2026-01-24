@@ -19,6 +19,8 @@
     "@prisma/client": "^5.19.1",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.90.1",
+    "@upstash/ratelimit": "^2.0.8",
+    "@upstash/redis": "^1.36.1",
     "dotenv": "^16.0.0",
     "framer-motion": "^12.26.1",
     "lucide-react": "^0.562.0",
