@@ -299,7 +299,10 @@
     width: 100%;
     margin-top: auto;
     padding: 1.5rem 0;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .footerText {
@@ -340,9 +343,13 @@
 @media (max-width: 1000px) {
     .container {
         justify-content: flex-start;
-        padding-top: 5rem;
+        padding-top: 0.5rem;
         height: 100dvh;
         /* Use dynamic viewport height */
+    }
+
+    .topHeader {
+        padding: 1rem 1.5rem;
     }
 
     .bentoHub {

@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
+import { useState, useEffect, useCallback } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import styles from "./page.module.css";
 import CountdownTimer from "@/components/CountdownTimer";
 import OnboardingModal from "@/components/OnboardingModal";
 import WaitlistDashboard from "@/components/WaitlistDashboard";
 import { useAuth } from "@/components/AuthProvider";
-import { motion } from "framer-motion";
 import { Twitter, Shield, Zap, Cpu, Activity, ArrowRight, CornerDownRight, Box, Terminal, ChevronRight, Activity as ActivityIcon } from "lucide-react";
 import Logo from "@/components/Logo";
 import TacticalButton from "@/components/TacticalButton";
@@ -55,6 +54,31 @@ export default function WelcomePage() {
     const [userSession, setUserSession] = useState<any>(null);
     const [isDetermining, setIsDetermining] = useState(true);
     const [config, setConfig] = useState<any>(null);
+    const [missionIndex, setMissionIndex] = useState(0);
+    const [tagIndex, setTagIndex] = useState(0);
+
+    const tags = ["[ LAYER_01_COORDINATION ]", "[ SPRAY & PLAY ]"];
+
+    const missions = [
+        "The first high-frequency P2P settlement layer for brand amplification.",
+        "Earn 50% more on your tokens just for being social. Complete missions to skip the queue and get paid faster.",
+        "The first non-custodial coordination layer for token incubation and community distribution."
+    ];
+
+    useEffect(() => {
+        const missionInterval = setInterval(() => {
+            setMissionIndex((prev) => (prev + 1) % missions.length);
+        }, 10000); // 10 seconds
+
+        const tagInterval = setInterval(() => {
+            setTagIndex((prev) => (prev + 1) % tags.length);
+        }, 30000); // 30 seconds
+
+        return () => {
+            clearInterval(missionInterval);
+            clearInterval(tagInterval);
+        };
+    }, [missions.length, tags.length]);
 
     // Initial session check from localStorage to prevent flicker
     useEffect(() => {
@@ -161,8 +185,18 @@ export default function WelcomePage() {
                 </nav>
 
                 <div className={styles.hero}>
-                    <div className="neon-tag">
-                        [ LAYER_01_COORDINATION ]
+                    <div className="neon-tag" style={{ height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <AnimatePresence mode="wait">
+                            <motion.span
+                                key={tagIndex}
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: 10 }}
+                                transition={{ duration: 0.8 }}
+                            >
+                                {tags[tagIndex]}
+                            </motion.span>
+                        </AnimatePresence>
                     </div>
                     <motion.h1
                         className="zenith-h1"
@@ -172,15 +206,21 @@ export default function WelcomePage() {
                     >
                         Where Tokens<br />Earn Belief
                     </motion.h1>
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.3, duration: 1 }}
-                    >
-                        The first non-custodial coordination layer for token incubation
-                        and community distribution.
-                    </motion.p>
-                    <p className="description">The first high-frequency P2P settlement layer for brand amplification. Join the frontend elite.</p>
+
+                    <div style={{ margin: '2rem 0', minHeight: '3.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <AnimatePresence mode="wait">
+                            <motion.p
+                                key={missionIndex}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                transition={{ duration: 1 }}
+                                style={{ margin: 0 }}
+                            >
+                                {missions[missionIndex]}
+                            </motion.p>
+                        </AnimatePresence>
+                    </div>
 
                     <TacticalButton
                         onClick={handleEnlist}
