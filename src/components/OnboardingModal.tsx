@@ -27,12 +27,41 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
     // Step 4: Verification
     const [verificationLink, setVerificationLink] = useState('');
 
+    // Persistence helper
+    const STORAGE_KEY = 'trenches_onboarding_state';
+
     useEffect(() => {
         fetch('/api/config')
             .then(res => res.json())
             .then(data => setConfig(data))
             .catch(err => console.error('Failed to fetch config:', err));
+
+        // Restore state from localStorage
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            try {
+                const data = JSON.parse(saved);
+                if (data.step) setStep(data.step);
+                if (data.evmAddress) setEvmAddress(data.evmAddress);
+                if (data.solAddress) setSolAddress(data.solAddress);
+                if (data.verificationLink) setVerificationLink(data.verificationLink);
+            } catch (e) {
+                console.error("Failed to restore onboarding state");
+            }
+        }
     }, []);
+
+    // Save state to localStorage whenever it changes
+    useEffect(() => {
+        if (isOpen) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                step,
+                evmAddress,
+                solAddress,
+                verificationLink
+            }));
+        }
+    }, [step, evmAddress, solAddress, verificationLink, isOpen]);
 
     if (!isOpen) return null;
 
@@ -64,6 +93,7 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
             });
             const data = await res.json();
             if (data.success && data.user) {
+                localStorage.removeItem(STORAGE_KEY); // Clear stickiness on completion
                 onComplete(data.user);
             } else {
                 alert(data.error || 'Failed to finalize enlistment');
