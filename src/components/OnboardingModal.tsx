@@ -100,7 +100,7 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
                 body: JSON.stringify({
                     walletEvm: evmAddress,
                     walletSol: solAddress,
-                    referredByCode: sessionStorage.getItem('referralCode') || undefined,
+                    referredByCode: localStorage.getItem('referralCode') || undefined,
                     // Handle will be generated/updated in backend if not provided
                     verificationLink,
                 }),

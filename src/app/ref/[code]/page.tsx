@@ -11,7 +11,7 @@ export default function ReferralRedirect() {
     useEffect(() => {
         if (code) {
             // Save referral code for later onboarding/enlistment
-            sessionStorage.setItem('referralCode', code);
+            localStorage.setItem('referralCode', code);
 
             // Redirect to the home landing page
             router.push('/');

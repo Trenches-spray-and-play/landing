@@ -5,8 +5,15 @@ import { AuthProvider } from "@/components/AuthProvider";
 
 
 export const metadata: Metadata = {
-  title: "Trenches: Spray & Pray",
-  description: "Non-custodial belief coordination protocol",
+  title: "Trenches: Spray & Play",
+  description: "Earn more on your tokens just for being social.",
+  openGraph: {
+    images: ['/trenches-logo.png'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: ['/trenches-logo.png'],
+  }
 };
 
 export default function RootLayout({
