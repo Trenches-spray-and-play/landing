@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import styles from './OnboardingModal.module.css';
+import { Check } from 'lucide-react';
 
 interface PlatformConfig {
     telegramUrl: string;
@@ -19,6 +20,10 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
     const [step, setStep] = useState(1);
     const [isSyncing, setIsSyncing] = useState(false);
     const [config, setConfig] = useState<PlatformConfig | null>(null);
+
+    // Social task states
+    const [telegramConfirmed, setTelegramConfirmed] = useState(false);
+    const [twitterConfirmed, setTwitterConfirmed] = useState(false);
 
     // Step 3: Wallets
     const [evmAddress, setEvmAddress] = useState('');
@@ -72,6 +77,14 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
 
     const handleSocialMissions = () => setStep(2);
 
+    const handleTelegramClick = () => {
+        setTimeout(() => setTelegramConfirmed(true), 10000);
+    };
+
+    const handleTwitterClick = () => {
+        setTimeout(() => setTwitterConfirmed(true), 10000);
+    };
+
     const handleWalletSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setStep(3);
@@ -124,16 +137,38 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
                         <h2 className={styles.title}>SOCIAL INTEL</h2>
                         <p className={styles.desc}>Join the command center and coordinate with other believers.</p>
                         <div className={styles.missionGrid}>
-                            <a href={telegramUrl} className={styles.missionButton} target="_blank" rel="noopener noreferrer">
-                                <span className={styles.missionIcon}>📱</span>
+                            <a
+                                href={telegramUrl}
+                                className={`${styles.missionButton} ${telegramConfirmed ? styles.completed : ''}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={handleTelegramClick}
+                            >
+                                <span className={styles.missionIcon}>
+                                    {telegramConfirmed ? <Check size={18} color="#00ff00" /> : '📱'}
+                                </span>
                                 <span className={styles.missionText}>JOIN TELEGRAM</span>
                             </a>
-                            <a href={twitterUrl} className={styles.missionButton} target="_blank" rel="noopener noreferrer">
-                                <span className={styles.missionIcon}>𝕏</span>
+                            <a
+                                href={twitterUrl}
+                                className={`${styles.missionButton} ${twitterConfirmed ? styles.completed : ''}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={handleTwitterClick}
+                            >
+                                <span className={styles.missionIcon}>
+                                    {twitterConfirmed ? <Check size={18} color="#00ff00" /> : '𝕏'}
+                                </span>
                                 <span className={styles.missionText}>FOLLOW ON X</span>
                             </a>
                         </div>
-                        <button className={styles.nextBtn} onClick={handleSocialMissions}>CONTINUE ENLISTMENT</button>
+                        <button
+                            className={styles.nextBtn}
+                            onClick={handleSocialMissions}
+                            disabled={!telegramConfirmed || !twitterConfirmed}
+                        >
+                            CONTINUE ENLISTMENT
+                        </button>
                     </div>
                 )}
 

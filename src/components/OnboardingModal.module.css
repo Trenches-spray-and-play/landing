@@ -178,6 +178,11 @@
     border-color: #333;
 }
 
+.missionButton.completed {
+    border-color: #00ff00;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.1);
+}
+
 .missionIcon {
     font-size: 1.2rem;
 }
@@ -203,6 +208,13 @@
 .nextBtn:hover {
     border-color: #555;
     color: #fff;
+}
+
+.nextBtn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    border-color: #222;
+    color: #444;
 }
 
 /* Step 3 & 4 forms */

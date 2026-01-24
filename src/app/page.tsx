@@ -113,8 +113,10 @@ export default function WelcomePage() {
                     if (data.exists && data.user) {
                         setUserSession(data.user);
                         localStorage.setItem('user_session', JSON.stringify(data.user));
+                    } else if (user) {
+                        // User exists in Supabase but not in DB yet (signing in)
+                        setIsOnboardingOpen(true);
                     }
-                    // REMOVED auto-trigger of OnboardingModal here to allow user to read the page first
                 })
                 .catch(err => console.error("Sync error:", err))
                 .finally(() => setIsDetermining(false));
@@ -158,15 +160,6 @@ export default function WelcomePage() {
         setUserSession(null);
         localStorage.removeItem('user_session');
     };
-
-    // Prevent rendering landing content if we are still figuring out the session
-    if (isDetermining || (authLoading && !userSession)) {
-        return (
-            <div className={styles.loadingContainer} style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-zenith)' }}>
-                <div className="animate-pulse" style={{ color: 'var(--accent-zenith)', fontSize: '0.8rem', letterSpacing: '4px' }}>SYNCING PROTOCOL...</div>
-            </div>
-        );
-    }
 
     if (userSession) {
         return <WaitlistDashboard userSession={userSession} onLogout={handleLogout} />;
