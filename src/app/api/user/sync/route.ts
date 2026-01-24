@@ -70,32 +70,24 @@ export async function POST(request: Request) {
 
     try {
         const body = await request.json();
-        const { handle, email, walletSol, walletEvm, referralCode, captchaToken } = body;
-
-        // 1. Verify Captcha
-        const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
-        if (turnstileSecret && captchaToken) {
-            const formData = new FormData();
-            formData.append('secret', turnstileSecret);
-            formData.append('response', captchaToken);
-
-            const result = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-                method: 'POST',
-                body: formData,
-            });
-
-            const outcome = await result.json();
-            if (!outcome.success) {
-                return NextResponse.json({ error: 'Invalid captcha' }, { status: 400 });
-            }
-        } else if (process.env.NODE_ENV === 'production' && !captchaToken) {
-            return NextResponse.json({ error: 'Captcha required' }, { status: 400 });
-        }
+        const { handle, email, walletSol, walletEvm, referredByCode } = body;
 
         // Check if user already exists
         let user = await prisma.user.findUnique({
             where: { supabaseId: authUser.id }
         });
+
+        // Determine referrer if code provided
+        let referrerId: string | null = null;
+        if (referredByCode) {
+            const referrer = await prisma.user.findUnique({
+                where: { referralCode: referredByCode.toUpperCase() },
+                select: { id: true }
+            });
+            if (referrer) {
+                referrerId = referrer.id;
+            }
+        }
 
         if (user) {
             // Update existing user
@@ -106,10 +98,14 @@ export async function POST(request: Request) {
                     email: email || authUser.email,
                     walletSol: walletSol || user.walletSol,
                     walletEvm: walletEvm || user.walletEvm,
+                    // Only set referrer if not already set
+                    ...(referrerId && !user.referredById ? { referredById: referrerId } : {})
                 }
             });
         } else {
-            // Create new user
+            // Create new user (automatically joining waitlist)
+            const generatedCode = Math.random().toString(36).substring(2, 10).toUpperCase();
+
             user = await prisma.user.create({
                 data: {
                     supabaseId: authUser.id,
@@ -117,10 +113,19 @@ export async function POST(request: Request) {
                     email: email || authUser.email,
                     walletSol,
                     walletEvm,
-                    referralCode: referralCode || Math.random().toString(36).substring(2, 10).toUpperCase(),
+                    referralCode: generatedCode,
+                    referredById: referrerId,
                     beliefScore: 0,
                 }
             });
+
+            // Optional: If you want to award the "Instant BP" for referral here too:
+            if (referrerId) {
+                await prisma.user.update({
+                    where: { id: referrerId },
+                    data: { beliefScore: { increment: 50 } }
+                });
+            }
         }
 
         // Calculate position for new user (rank = how many users joined before or at same time)

@@ -5,7 +5,7 @@ import { AuthProvider } from "@/components/AuthProvider";
 
 
 export const metadata: Metadata = {
-  title: "Trenches: Spray & Play",
+  title: "Trenches: Spray & Pray",
   description: "Non-custodial belief coordination protocol",
 };
 

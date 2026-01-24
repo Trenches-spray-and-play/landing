@@ -16,10 +16,9 @@ export async function GET() {
                 telegramUrl: 'https://t.me/trenchesprotocol',
                 twitterUrl: 'https://x.com/traboraofficial',
                 twitterHandle: '@traboraofficial',
-                onboardingTweetText: 'Just enlisted in the @traboraofficial deployment queue. Spray and Play! 🔫',
+                onboardingTweetText: 'Just enlisted in the @traboraofficial deployment queue. Spray and Pray! 🔫',
                 platformName: 'Trenches',
-                referralDomain: 'playtrenches.xyz',
-                docsUrl: 'https://docs.playtrenches.xyz',
+                referralDomain: 'trenches.play',
                 waitlistStatusMessage: 'WAITLIST PROTOCOL ACTIVE',
                 deploymentStatusMessage: 'DEPLOYMENT WINDOW OPEN',
             });
