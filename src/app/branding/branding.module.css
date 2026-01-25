@@ -113,14 +113,14 @@
 }
 
 .dpPreview {
-    width: 120px;
-    height: 120px;
+    width: 200px;
+    height: 200px;
     background: #000;
-    border: 1px solid var(--accent-zenith);
+    border: 1px solid #1a1a1a;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
+    border-radius: 12px;
 }
 
 .headerPreview {

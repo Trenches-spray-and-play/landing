@@ -41,7 +41,7 @@ export default function WaitingCenter({ userSession, onGoToDapp, onLogout }: Wai
         return date;
     };
 
-    const referralDomain = config?.referralDomain || 'trenches.play';
+    const referralDomain = config?.referralDomain || 'playtrenches.xyz';
     const statusMessage = config?.waitlistStatusMessage || 'WAITLIST PROTOCOL ACTIVE';
 
     return (
@@ -86,9 +86,9 @@ export default function WaitingCenter({ userSession, onGoToDapp, onLogout }: Wai
                     <div className={styles.dossierCard}>
                         <div className={styles.cardLabel}>RECROOTMENT LINK</div>
                         <div className={styles.referralBox}>
-                            <span className={styles.refLink}>{referralDomain}/ref/{userSession?.handle?.replace('@', '')}</span>
+                            <span className={styles.refLink}>{referralDomain}/ref/{userSession?.referralCode}</span>
                             <button className={styles.copyBtn} onClick={() => {
-                                navigator.clipboard.writeText(`${referralDomain}/ref/${userSession?.handle?.replace('@', '')}`);
+                                navigator.clipboard.writeText(`https://${referralDomain}/ref/${userSession?.referralCode}`);
                                 alert('Link Copied');
                             }}>COPY</button>
                         </div>

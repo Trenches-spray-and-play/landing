@@ -18,7 +18,7 @@ export async function GET() {
                 twitterHandle: '@traboraofficial',
                 onboardingTweetText: 'Just enlisted in the @traboraofficial deployment queue. Spray and Pray! 🔫',
                 platformName: 'Trenches',
-                referralDomain: 'trenches.play',
+                referralDomain: 'playtrenches.xyz',
                 waitlistStatusMessage: 'WAITLIST PROTOCOL ACTIVE',
                 deploymentStatusMessage: 'DEPLOYMENT WINDOW OPEN',
             });

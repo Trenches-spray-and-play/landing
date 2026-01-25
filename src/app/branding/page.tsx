@@ -6,7 +6,7 @@ import Logo from "@/components/Logo";
 import { Download, Copy, ExternalLink } from "lucide-react";
 
 export default function BrandingPage() {
-    const downloadSVG = (type: "full" | "icon") => {
+    const downloadSVG = (type: "full" | "icon" | "highres") => {
         const svgElement = document.querySelector(`#logo-${type} svg`);
         if (!svgElement) return;
 
@@ -56,10 +56,25 @@ export default function BrandingPage() {
                     <div className={styles.assetCard}>
                         <span className={styles.assetLabel}>LOGO_ICON_ONLY</span>
                         <div id="logo-icon">
-                            <Logo variant="icon" width={60} />
+                            <Logo variant="icon" width={60} color="#fff" />
                         </div>
                         <button className={styles.downloadBtn} onClick={() => downloadSVG("icon")}>
                             <Download size={14} style={{ marginRight: '8px' }} /> DOWNLOAD_SVG
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section className={styles.section}>
+                <h2 className={styles.sectionTitle}>High Resolution Identity</h2>
+                <div className={styles.assetGrid}>
+                    <div className={styles.assetCard} style={{ gridColumn: 'span 2' }}>
+                        <span className={styles.assetLabel}>LARGE_FOR_PRINT_SVG (1200 x 1200)</span>
+                        <div id="logo-highres" style={{ padding: '4rem', background: '#000', borderRadius: '24px' }}>
+                            <Logo variant="icon" width={400} color="#fff" />
+                        </div>
+                        <button className={styles.downloadBtn} onClick={() => downloadSVG("highres")}>
+                            <Download size={14} style={{ marginRight: '8px' }} /> DOWNLOAD_1200X1200_ASSET
                         </button>
                     </div>
                 </div>
@@ -71,9 +86,9 @@ export default function BrandingPage() {
                     <div className={styles.assetCard}>
                         <span className={styles.assetLabel}>DISPLAY_PICTURE</span>
                         <div className={styles.dpPreview}>
-                            <Logo variant="icon" width={50} color="#39FF14" />
+                            <Logo variant="icon" width={80} color="#fff" />
                         </div>
-                        <p style={{ fontSize: '0.7rem', color: '#555', marginTop: '1rem' }}>SQUARE_AVA_CONCEPT</p>
+                        <p style={{ fontSize: '0.7rem', color: '#555', marginTop: '1rem' }}>SQUARE_B&W_AVA</p>
                     </div>
 
                     <div className={styles.assetCard}>
