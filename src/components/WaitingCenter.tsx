@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useState, useEffect } from "react";
 import styles from './WaitingCenter.module.css';
 import CountdownTimer from './CountdownTimer';
@@ -16,18 +15,35 @@ interface PlatformConfig {
     platformName: string;
 }
 
+interface UserSession {
+    id: string;
+    handle: string;
+    referralCode: string;
+    position: number;
+    beliefScore: number;
+    boostPoints: number;
+    joinedAt: string;
+    referralCount: number;
+}
+
 interface WaitingCenterProps {
-    userSession: any;
+    userSession: UserSession | null;
     onGoToDapp?: () => void;
     onLogout?: () => void;
 }
 
 export default function WaitingCenter({ userSession, onGoToDapp, onLogout }: WaitingCenterProps) {
     const [config, setConfig] = useState<PlatformConfig | null>(null);
+    const [copied, setCopied] = useState(false);
 
     useEffect(() => {
+        if (typeof window === 'undefined') return;
+
         fetch('/api/config')
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error('Config fetch failed');
+                return res.json();
+            })
             .then(data => setConfig(data))
             .catch(err => console.error('Failed to fetch config:', err));
     }, []);
@@ -36,13 +52,19 @@ export default function WaitingCenter({ userSession, onGoToDapp, onLogout }: Wai
         if (config?.deploymentDate) {
             return new Date(config.deploymentDate);
         }
-        const date = new Date();
-        date.setDate(date.getDate() + 29);
-        return date;
+        // Return null if no deployment date is set
+        return null;
     };
 
     const referralDomain = config?.referralDomain || 'playtrenches.xyz';
     const statusMessage = config?.waitlistStatusMessage || 'WAITLIST PROTOCOL ACTIVE';
+
+    const handleCopy = () => {
+        const link = `https://${referralDomain}/ref/${userSession?.referralCode}`;
+        navigator.clipboard.writeText(link);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
 
     return (
         <main className={styles.container}>
@@ -71,26 +93,30 @@ export default function WaitingCenter({ userSession, onGoToDapp, onLogout }: Wai
                 <div className={styles.dossierGrid}>
                     <div className={styles.dossierCard}>
                         <div className={styles.cardLabel}>QUEUE POSITION</div>
-                        <div className={styles.cardValue}>#{userSession?.position || '1205'}</div>
+                        <div className={styles.cardValue}>#{userSession?.position || '--'}</div>
                         <div className={styles.cardSub}>BELIEVERS AHEAD OF YOU</div>
                     </div>
                     <div className={styles.dossierCard}>
                         <div className={styles.cardLabel}>DEPLOYMENT WINDOW</div>
                         <div className={styles.timerWrapper}>
-                            <CountdownTimer
-                                targetDate={getDeploymentTime()}
-                            />
+                            {getDeploymentTime() ? (
+                                <CountdownTimer targetDate={getDeploymentTime()!} />
+                            ) : (
+                                <span className={styles.pendingText}>PENDING</span>
+                            )}
                         </div>
                         <div className={styles.cardSub}>INDIVIDUAL LAUNCH TIMER</div>
                     </div>
                     <div className={styles.dossierCard}>
-                        <div className={styles.cardLabel}>RECROOTMENT LINK</div>
+                        <div className={styles.cardLabel}>RECRUITMENT LINK</div>
                         <div className={styles.referralBox}>
                             <span className={styles.refLink}>{referralDomain}/ref/{userSession?.referralCode}</span>
-                            <button className={styles.copyBtn} onClick={() => {
-                                navigator.clipboard.writeText(`https://${referralDomain}/ref/${userSession?.referralCode}`);
-                                alert('Link Copied');
-                            }}>COPY</button>
+                            <button
+                                className={`${styles.copyBtn} ${copied ? styles.copied : ''}`}
+                                onClick={handleCopy}
+                            >
+                                {copied ? 'COPIED!' : 'COPY'}
+                            </button>
                         </div>
                         <div className={styles.cardSub}>RECRUIT SOLDIERS TO MOVE UP</div>
                     </div>

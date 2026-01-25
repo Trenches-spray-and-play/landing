@@ -30,7 +30,7 @@ export default function BrandingPage() {
         tagline: "WHERE TOKENS EARN BELIEF",
         shortBio: "The first high-frequency P2P settlement layer for token incubation and community coordination. Built in the trenches.",
         longBio: "TRENCHES is the first non-custodial coordination layer engineered for hyper-visibility and pre-market growth. Earn 50% more on your tokens through verified social engagement and institutional-grade P2P settlement mechanics. Powered by belief.",
-        twitterBio: "Where Tokens Earn Belief. 🔫\nThe first high-frequency P2P settlement layer for token incubation & distribution.\n\nEnlist: trenches.play",
+        twitterBio: "Where Tokens Earn Belief. 🔫\nThe first high-frequency P2P settlement layer for token incubation & distribution.\n\nEnlist: playtrenches.xyz",
     };
 
     return (

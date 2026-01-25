@@ -159,6 +159,26 @@
     cursor: pointer;
     font-family: var(--font-mono);
     font-weight: bold;
+    transition: all 0.2s ease;
+    min-width: 50px;
+}
+
+.copyBtn:hover {
+    background: var(--accent-blt);
+    color: #000;
+}
+
+.copyBtn.copied {
+    background: var(--accent-blt);
+    color: #000;
+    border-color: var(--accent-blt);
+}
+
+.pendingText {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: #666;
+    letter-spacing: 0.2rem;
 }
 
 /* Tactical Intel Section */

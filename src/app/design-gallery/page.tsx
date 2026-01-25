@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 const mockData = {
     handle: "@IZECUBE",
-    referral: "trenches.play/ref/HJBA255V",
+    referral: "playtrenches.xyz/ref/HJBA255V",
     queue: "#6",
     beliefScore: 0,
     boostPoints: 0,

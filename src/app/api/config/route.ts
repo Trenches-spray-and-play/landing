@@ -1,8 +1,13 @@
 import { prisma } from '@/lib/db';
 import { NextResponse } from 'next/server';
+import { rateLimit, addRateLimitHeaders } from '@/lib/rate-limit';
 
 // Public read-only endpoint for platform config
-export async function GET() {
+export async function GET(request: Request) {
+    // Apply rate limiting - general rate (60 requests per minute)
+    const { limited, response: rateLimitResponse, rateLimitResult } = await rateLimit(request, 'general');
+    if (limited) return rateLimitResponse;
+
     try {
         let config = await prisma.platformConfig.findUnique({
             where: { id: 'default' }
@@ -10,7 +15,7 @@ export async function GET() {
 
         if (!config) {
             // Return default values if config doesn't exist
-            return NextResponse.json({
+            const response = NextResponse.json({
                 id: 'default',
                 deploymentDate: null,
                 telegramUrl: 'https://t.me/trenchesprotocol',
@@ -22,11 +27,14 @@ export async function GET() {
                 waitlistStatusMessage: 'WAITLIST PROTOCOL ACTIVE',
                 deploymentStatusMessage: 'DEPLOYMENT WINDOW OPEN',
             });
+            return addRateLimitHeaders(response, rateLimitResult);
         }
 
-        return NextResponse.json(config);
+        const response = NextResponse.json(config);
+        return addRateLimitHeaders(response, rateLimitResult);
     } catch (error) {
         console.error('Failed to fetch config:', error);
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        const response = NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        return addRateLimitHeaders(response, rateLimitResult);
     }
 }

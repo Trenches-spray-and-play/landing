@@ -33,7 +33,7 @@ async function main() {
             // Branding
             platformName: 'Trenches',
             referralDomain: 'playtrenches.xyz',
-            docsUrl: 'https://docs.trenches.play',
+            docsUrl: 'https://docs.playtrenches.xyz',
 
             // Status Messages
             waitlistStatusMessage: 'WAITLIST PROTOCOL ACTIVE',

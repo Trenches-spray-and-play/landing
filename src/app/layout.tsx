@@ -4,17 +4,39 @@ import "./globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
 
 
+import type { Viewport } from "next";
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://playtrenches.xyz'),
-  title: "Trenches: Spray & Play",
-  description: "Earn more on your tokens just for being social.",
+  title: {
+    default: "Trenches: Spray & Play",
+    template: "%s | Trenches"
+  },
+  description: "The fastest path to 1.5X ROI. Spray $1,000 and secure $1,500 in 24 hours. Powered by Believe.",
   openGraph: {
-    images: ['https://playtrenches.xyz/trenches-og-v3.png'],
+    type: "website",
+    siteName: "Trenches",
+    title: "Trenches: Spray & Play",
+    description: "The fastest path to 1.5X ROI. Spray $1,000 and secure $1,500 in 24 hours. Powered by Believe.",
+    images: [
+      {
+        url: "/trenches-og-v4.png",
+        width: 1200,
+        height: 630,
+        alt: "Trenches: Spray & Play"
+      }
+    ],
   },
   twitter: {
-    card: 'summary_large_image',
-    images: ['https://playtrenches.xyz/trenches-og-v3.png'],
-  }
+    card: "summary_large_image",
+    title: "Trenches: Spray & Play",
+    description: "The fastest path to 1.5X ROI. Spray $1,000 and secure $1,500 in 24 hours. Powered by Believe.",
+    images: ["/trenches-og-v4.png"],
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#00FF66",
 };
 
 export default function RootLayout({

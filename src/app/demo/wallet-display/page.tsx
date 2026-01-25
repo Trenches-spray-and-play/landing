@@ -54,7 +54,7 @@ export default function WalletDisplayDemo() {
                     <span className="handle">@izecubes</span>
                     <span className="referral-stat">REFERRALS: <span>42</span></span>
                 </div>
-                <span className="referral-link">trenches.play/ref/GJK29X</span>
+                <span className="referral-link">playtrenches.xyz/ref/GJK29X</span>
                 <div className="hub-actions">
                     <button className="copy-btn">COPY LINK</button>
                     <button className="logout-btn">LOGOUT</button>

@@ -4,7 +4,7 @@ import styles from './DesignMix.module.css';
 
 const mockData = {
     handle: "@IZECUBE",
-    referral: "trenches.play/ref/HJBA255V",
+    referral: "playtrenches.xyz/ref/HJBA255V",
     queue: "#323456",
     referralCount: 12,
     timer: "25 : 03 : 28 : 12"

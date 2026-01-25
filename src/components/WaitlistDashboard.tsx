@@ -42,7 +42,7 @@ export default function WaitlistDashboard({ userSession, onLogout }: WaitlistDas
     const referralCount = userSession?.referralCount ?? 0;
     const referralCode = userSession?.referralCode || 'LOADING';
     const handle = userSession?.handle || '@user';
-    const referralDomain = config?.referralDomain || 'trenches.play';
+    const referralDomain = config?.referralDomain || 'playtrenches.xyz';
     const statusMessage = config?.waitlistStatusMessage || 'WAITLIST PROTOCOL ACTIVE';
 
     const handleCopy = () => {

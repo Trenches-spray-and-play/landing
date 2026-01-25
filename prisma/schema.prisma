@@ -30,30 +30,33 @@ model User {
   telegramHandle   String?                     // Telegram username
   
   // Relations
-  deposits         Deposit[]
-  depositAddresses DepositAddress[]
-  participants     Participant[]
-  postSubmissions  PostSubmission[]
-  sprayEntries     SprayEntry[]
-  transactions     Transaction[]
-  userTasks        UserTask[]
-  validationsGiven Validation[]     @relation("validator")
-  campaignWaitlists CampaignWaitlist[]
+  deposits            Deposit[]
+  depositAddresses    DepositAddress[]
+  participants        Participant[]
+  postSubmissions     PostSubmission[]
+  sprayEntries        SprayEntry[]
+  transactions        Transaction[]
+  userTasks           UserTask[]
+  validationsGiven    Validation[]           @relation("validator")
+  campaignWaitlists   CampaignWaitlist[]
+  userRaids           UserRaid[]
+  contentSubmissions  UserContentSubmission[]
 }
 
 model Trench {
-  id           String        @id @default(uuid())
-  name         String
-  level        TrenchLevel
-  entrySize    Int
-  usdEntry     Int
-  cadence      String
-  reserves     String
-  active       Boolean       @default(true)
-  createdAt    DateTime      @default(now())
-  participants Participant[]
-  transactions Transaction[]
-  sprayEntries SprayEntry[]
+  id            String        @id @default(uuid())
+  name          String
+  level         TrenchLevel
+  entrySize     Int
+  usdEntry      Int
+  durationHours Int           @default(24)  // Baseline wait time in hours (Rapid=24, Mid=72, Deep=168)
+  cadence       String
+  reserves      String
+  active        Boolean       @default(true)
+  createdAt     DateTime      @default(now())
+  participants  Participant[]
+  transactions  Transaction[]
+  sprayEntries  SprayEntry[]
 }
 
 // SprayEntry tracks spray payments that are pending task completion
@@ -80,20 +83,23 @@ enum SprayEntryStatus {
 }
 
 model Participant {
-  id             String    @id @default(uuid())
-  userId         String
-  trenchId       String
-  status         String
-  joinedAt       DateTime  @default(now())
-  boostPoints    Int       @default(0)
-  entryAmount    Int       @default(0)
-  expiresAt      DateTime?
-  maxPayout      Int       @default(0)
-  receivedAmount Int       @default(0)
-  trench         Trench    @relation(fields: [trenchId], references: [id])
-  user           User      @relation(fields: [userId], references: [id])
+  id               String    @id @default(uuid())
+  userId           String
+  trenchId         String
+  status           String
+  joinedAt         DateTime  @default(now())
+  boostPoints      Int       @default(0)
+  entryAmount      Int       @default(0)
+  expectedPayoutAt DateTime?                     // Calculated payout time (joinedAt + duration - BP reduction)
+  expiresAt        DateTime?
+  maxPayout        Int       @default(0)
+  receivedAmount   Int       @default(0)
+  payoutTxHash     String?                       // Transaction hash once paid
+  trench           Trench    @relation(fields: [trenchId], references: [id])
+  user             User      @relation(fields: [userId], references: [id])
 
   @@unique([userId, trenchId])
+  @@index([expectedPayoutAt])                   // Index for efficient payout queries
 }
 
 model Transaction {
@@ -162,6 +168,9 @@ model PostSubmission {
   updatedAt    DateTime     @updatedAt
   user         User         @relation(fields: [userId], references: [id])
   validations  Validation[]
+
+  // Unique constraint for upsert operations (one submission per user per content type)
+  @@unique([userId, contentType])
 }
 
 model Validation {
@@ -368,8 +377,8 @@ model PlatformConfig {
   
   // Branding
   platformName            String   @default("Trenches")
-  referralDomain          String   @default("trenches.play")
-  docsUrl                 String   @default("https://docs.trenches.play")
+  referralDomain          String   @default("playtrenches.xyz")
+  docsUrl                 String   @default("https://docs.playtrenches.xyz")
   
   // Status Messages
   waitlistStatusMessage   String   @default("WAITLIST PROTOCOL ACTIVE")
@@ -378,8 +387,88 @@ model PlatformConfig {
   // Belief Score Tier Configuration (JSON array)
   // Format: [{"minScore": 0, "multiplier": 0.5}, {"minScore": 100, "multiplier": 0.75}, ...]
   beliefTiers             String   @default("[{\"minScore\":0,\"multiplier\":0.5},{\"minScore\":100,\"multiplier\":0.75},{\"minScore\":500,\"multiplier\":0.9},{\"minScore\":1000,\"multiplier\":1.0}]")
-  
+
+  // Time-Based Payout Configuration
+  bpToMinutesRate         Int      @default(1)   // 1 BP = X minutes off payout time
+
   // Metadata
   updatedAt               DateTime @updatedAt
   updatedBy               String?
+}
+
+// ========================================
+// EARN HUB MODELS (Content Market & Raids)
+// ========================================
+
+// Content Campaign - brands paying for content syndication (rewards Belief Points)
+model ContentCampaign {
+  id                    String   @id @default(uuid())
+  brand                 String                           // Brand name (e.g., "MetaWin")
+  name                  String                           // Campaign name (e.g., "Elite Clipping")
+  description           String?
+  platforms             String[] @default([])            // ["X", "TT", "IG"]
+  beliefPointsPer1k     Decimal  @db.Decimal(5, 2)       // Belief Points per 1k views (e.g., 1.5)
+  usdPer1k              Decimal? @db.Decimal(10, 2)      // Optional USD reward per 1k views
+  budgetUsd             Decimal? @db.Decimal(18, 2)      // Total campaign budget
+  spentUsd              Decimal  @default(0) @db.Decimal(18, 2) // Amount spent so far
+  icon                  String?                          // Emoji or icon URL
+  isActive              Boolean  @default(true)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relations
+  submissions           UserContentSubmission[]
+}
+
+// User's content submission to a campaign
+model UserContentSubmission {
+  id                String          @id @default(uuid())
+  userId            String
+  campaignId        String
+  url               String                               // The social link submitted
+  platform          String                               // X, TT, IG, YT
+  viewCount         Int             @default(0)          // Verified view count
+  beliefAwarded     Decimal         @default(0) @db.Decimal(5, 2) // Belief points given
+  usdAwarded        Decimal?        @db.Decimal(10, 2)   // USD awarded (optional)
+  status            String          @default("pending")  // pending, approved, rejected
+  createdAt         DateTime        @default(now())
+  verifiedAt        DateTime?
+
+  user              User            @relation(fields: [userId], references: [id])
+  campaign          ContentCampaign @relation(fields: [campaignId], references: [id])
+
+  @@index([userId])
+  @@index([campaignId])
+  @@index([status])
+}
+
+// Raid Campaign - social amplification targets (rewards Boost Points)
+model Raid {
+  id          String    @id @default(uuid())
+  title       String
+  platform    String                                     // X, TT, IG, YT
+  url         String                                     // The social link to raid
+  reward      Int       @default(50)                     // BP reward for raiding
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  expiresAt   DateTime?
+
+  // Relations
+  completions UserRaid[]
+}
+
+// Tracks which users have completed which raids
+model UserRaid {
+  id          String   @id @default(uuid())
+  userId      String
+  raidId      String
+  bpAwarded   Int      @default(0)
+  completedAt DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id])
+  raid        Raid     @relation(fields: [raidId], references: [id])
+
+  @@unique([userId, raidId])
+  @@index([userId])
+  @@index([raidId])
 }

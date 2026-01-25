@@ -325,3 +325,77 @@
     font-family: 'Courier New', Courier, monospace;
     margin-top: 0.5rem;
 }
+
+/* Error Toast */
+.errorToast {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(255, 68, 68, 0.1);
+    border: 1px solid rgba(255, 68, 68, 0.3);
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+    color: #ff6666;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.75rem;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Loading State */
+.loadingState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 3rem;
+    color: #666;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.8rem;
+}
+
+/* Spinner Animation */
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Field Error */
+.fieldError {
+    color: #ff6666;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.7rem;
+    margin-top: 0.5rem;
+    text-align: left;
+}
+
+/* Button with spinner */
+.finalizeBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.finalizeBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
