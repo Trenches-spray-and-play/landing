@@ -1,6 +1,24 @@
 import { prisma } from '@/lib/db';
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import crypto from 'crypto';
+
+// Generate a cryptographically secure referral code
+async function generateUniqueReferralCode(): Promise<string> {
+    const maxAttempts = 10;
+    for (let i = 0; i < maxAttempts; i++) {
+        const code = crypto.randomBytes(4).toString('hex').toUpperCase();
+        const existing = await prisma.user.findUnique({
+            where: { referralCode: code },
+            select: { id: true }
+        });
+        if (!existing) {
+            return code;
+        }
+    }
+    // Fallback: use longer code if collisions persist
+    return crypto.randomBytes(6).toString('hex').toUpperCase();
+}
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
@@ -70,7 +88,7 @@ export async function POST(request: Request) {
 
     try {
         const body = await request.json();
-        const { handle, email, walletSol, walletEvm, referredByCode } = body;
+        const { handle, email, walletSol, walletEvm, referredByCode, verificationLink } = body;
 
         // Check if user already exists
         let user = await prisma.user.findUnique({
@@ -102,30 +120,74 @@ export async function POST(request: Request) {
                     ...(referrerId && !user.referredById ? { referredById: referrerId } : {})
                 }
             });
-        } else {
-            // Create new user (automatically joining waitlist)
-            const generatedCode = Math.random().toString(36).substring(2, 10).toUpperCase();
 
-            user = await prisma.user.create({
-                data: {
-                    supabaseId: authUser.id,
-                    handle: handle || `@user_${authUser.id.slice(0, 8)}`,
-                    email: email || authUser.email,
-                    walletSol,
-                    walletEvm,
-                    referralCode: generatedCode,
-                    referredById: referrerId,
-                    beliefScore: 0,
-                }
-            });
-
-            // Optional: If you want to award the "Instant BP" for referral here too:
-            if (referrerId) {
-                await prisma.user.update({
-                    where: { id: referrerId },
-                    data: { beliefScore: { increment: 50 } }
+            // Store verification link as a post submission if provided
+            if (verificationLink) {
+                await prisma.postSubmission.upsert({
+                    where: {
+                        // Use a composite approach - find by unique combination
+                        id: `${user.id}-onboarding-verification`
+                    },
+                    update: {
+                        url: verificationLink,
+                        updatedAt: new Date()
+                    },
+                    create: {
+                        id: `${user.id}-onboarding-verification`,
+                        userId: user.id,
+                        platform: 'twitter',
+                        url: verificationLink,
+                        contentType: 'onboarding_verification',
+                        status: 'pending'
+                    }
                 });
             }
+        } else {
+            // Create new user with atomic transaction (user + referral bonus)
+            const generatedCode = await generateUniqueReferralCode();
+
+            // Use transaction to ensure atomicity
+            const result = await prisma.$transaction(async (tx) => {
+                // Create the user
+                const newUser = await tx.user.create({
+                    data: {
+                        supabaseId: authUser.id,
+                        handle: handle || `@user_${authUser.id.slice(0, 8)}`,
+                        email: email || authUser.email,
+                        walletSol,
+                        walletEvm,
+                        referralCode: generatedCode,
+                        referredById: referrerId,
+                        beliefScore: 0,
+                    }
+                });
+
+                // Award referrer bonus if applicable
+                if (referrerId) {
+                    await tx.user.update({
+                        where: { id: referrerId },
+                        data: { beliefScore: { increment: 50 } }
+                    });
+                }
+
+                // Store verification link as a post submission if provided
+                if (verificationLink) {
+                    await tx.postSubmission.create({
+                        data: {
+                            id: `${newUser.id}-onboarding-verification`,
+                            userId: newUser.id,
+                            platform: 'twitter',
+                            url: verificationLink,
+                            contentType: 'onboarding_verification',
+                            status: 'pending'
+                        }
+                    });
+                }
+
+                return newUser;
+            });
+
+            user = result;
         }
 
         // Calculate position for new user (rank = how many users joined before or at same time)

@@ -10,10 +10,14 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
+    "prisma:seed": "npx tsx prisma/seed.ts",
     "setup:env": "node scripts/create-env-local.js",
     "setup": "npm run setup:env && npm run prisma:generate",
     "test:db": "node scripts/test-db-connection.js",
     "update:db": "node ../scripts/update-env-database.js"
+  },
+  "prisma": {
+    "seed": "npx tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.19.1",
@@ -37,6 +41,8 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
     "prisma": "^5.19.1",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }

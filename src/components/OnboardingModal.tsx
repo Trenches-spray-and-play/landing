@@ -21,15 +21,13 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
     const [isSyncing, setIsSyncing] = useState(false);
     const [config, setConfig] = useState<PlatformConfig | null>(null);
 
-    // Social task states
+    // Social task states - now tracks both "clicked" and "confirmed"
+    const [telegramClicked, setTelegramClicked] = useState(false);
+    const [twitterClicked, setTwitterClicked] = useState(false);
     const [telegramConfirmed, setTelegramConfirmed] = useState(false);
     const [twitterConfirmed, setTwitterConfirmed] = useState(false);
 
-    // Step 3: Wallets
-    const [evmAddress, setEvmAddress] = useState('');
-    const [solAddress, setSolAddress] = useState('');
-
-    // Step 4: Verification
+    // Step 2: Verification
     const [verificationLink, setVerificationLink] = useState('');
 
     // Persistence helper
@@ -47,8 +45,6 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
             try {
                 const data = JSON.parse(saved);
                 if (data.step) setStep(data.step);
-                if (data.evmAddress) setEvmAddress(data.evmAddress);
-                if (data.solAddress) setSolAddress(data.solAddress);
                 if (data.verificationLink) setVerificationLink(data.verificationLink);
             } catch (e) {
                 console.error("Failed to restore onboarding state");
@@ -61,12 +57,10 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
         if (isOpen) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify({
                 step,
-                evmAddress,
-                solAddress,
                 verificationLink
             }));
         }
-    }, [step, evmAddress, solAddress, verificationLink, isOpen]);
+    }, [step, verificationLink, isOpen]);
 
     if (!isOpen) return null;
 
@@ -78,16 +72,11 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
     const handleSocialMissions = () => setStep(2);
 
     const handleTelegramClick = () => {
-        setTimeout(() => setTelegramConfirmed(true), 10000);
+        setTelegramClicked(true);
     };
 
     const handleTwitterClick = () => {
-        setTimeout(() => setTwitterConfirmed(true), 10000);
-    };
-
-    const handleWalletSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        setStep(3);
+        setTwitterClicked(true);
     };
 
     const handleFinalize = async (e: React.FormEvent) => {
@@ -98,10 +87,7 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    walletEvm: evmAddress,
-                    walletSol: solAddress,
                     referredByCode: localStorage.getItem('referralCode') || undefined,
-                    // Handle will be generated/updated in backend if not provided
                     verificationLink,
                 }),
             });
@@ -129,8 +115,6 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
                     <div className={`${styles.step} ${step >= 1 ? styles.active : ''}`}>01</div>
                     <div className={styles.line}></div>
                     <div className={`${styles.step} ${step >= 2 ? styles.active : ''}`}>02</div>
-                    <div className={styles.line}></div>
-                    <div className={`${styles.step} ${step >= 3 ? styles.active : ''}`}>03</div>
                 </div>
 
                 {step === 1 && (
@@ -138,30 +122,59 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
                         <h2 className={styles.title}>SOCIAL INTEL</h2>
                         <p className={styles.desc}>Join the command center and coordinate with other believers.</p>
                         <div className={styles.missionGrid}>
-                            <a
-                                href={telegramUrl}
-                                className={`${styles.missionButton} ${telegramConfirmed ? styles.completed : ''}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={handleTelegramClick}
-                            >
-                                <span className={styles.missionIcon}>
-                                    {telegramConfirmed ? <Check size={18} color="#00ff00" /> : '📱'}
-                                </span>
-                                <span className={styles.missionText}>JOIN TELEGRAM</span>
-                            </a>
-                            <a
-                                href={twitterUrl}
-                                className={`${styles.missionButton} ${twitterConfirmed ? styles.completed : ''}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={handleTwitterClick}
-                            >
-                                <span className={styles.missionIcon}>
-                                    {twitterConfirmed ? <Check size={18} color="#00ff00" /> : '𝕏'}
-                                </span>
-                                <span className={styles.missionText}>FOLLOW ON X</span>
-                            </a>
+                            {/* Telegram Task */}
+                            <div className={styles.missionItem}>
+                                <a
+                                    href={telegramUrl}
+                                    className={`${styles.missionButton} ${telegramConfirmed ? styles.completed : ''}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={handleTelegramClick}
+                                >
+                                    <span className={styles.missionIcon}>
+                                        {telegramConfirmed ? <Check size={18} color="#00ff00" /> : '📱'}
+                                    </span>
+                                    <span className={styles.missionText}>JOIN TELEGRAM</span>
+                                </a>
+                                {telegramClicked && !telegramConfirmed && (
+                                    <label className={styles.confirmLabel}>
+                                        <input
+                                            type="checkbox"
+                                            checked={telegramConfirmed}
+                                            onChange={(e) => setTelegramConfirmed(e.target.checked)}
+                                            className={styles.confirmCheckbox}
+                                        />
+                                        <span>I joined the Telegram</span>
+                                    </label>
+                                )}
+                            </div>
+
+                            {/* Twitter Task */}
+                            <div className={styles.missionItem}>
+                                <a
+                                    href={twitterUrl}
+                                    className={`${styles.missionButton} ${twitterConfirmed ? styles.completed : ''}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={handleTwitterClick}
+                                >
+                                    <span className={styles.missionIcon}>
+                                        {twitterConfirmed ? <Check size={18} color="#00ff00" /> : '𝕏'}
+                                    </span>
+                                    <span className={styles.missionText}>FOLLOW ON X</span>
+                                </a>
+                                {twitterClicked && !twitterConfirmed && (
+                                    <label className={styles.confirmLabel}>
+                                        <input
+                                            type="checkbox"
+                                            checked={twitterConfirmed}
+                                            onChange={(e) => setTwitterConfirmed(e.target.checked)}
+                                            className={styles.confirmCheckbox}
+                                        />
+                                        <span>I followed on X</span>
+                                    </label>
+                                )}
+                            </div>
                         </div>
                         <button
                             className={styles.nextBtn}
@@ -174,38 +187,6 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
                 )}
 
                 {step === 2 && (
-                    <div className={styles.content}>
-                        <h2 className={styles.title}>SECURE PAYOUT NODES</h2>
-                        <p className={styles.desc}>Enter your addresses to receive automated P2P settlements.</p>
-                        <form onSubmit={handleWalletSubmit} className={styles.form}>
-                            <div className={styles.inputGroup}>
-                                <label className={styles.label}>EVM ADDRESS (ETH no CEX address)</label>
-                                <input
-                                    type="text"
-                                    placeholder="0x..."
-                                    className={styles.input}
-                                    value={evmAddress}
-                                    onChange={(e) => setEvmAddress(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <div className={styles.inputGroup}>
-                                <label className={styles.label}>SOLANA ADDRESS</label>
-                                <input
-                                    type="text"
-                                    placeholder="Address..."
-                                    className={styles.input}
-                                    value={solAddress}
-                                    onChange={(e) => setSolAddress(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <button type="submit" className={styles.submitBtn}>BIND ADDRESSES</button>
-                        </form>
-                    </div>
-                )}
-
-                {step === 3 && (
                     <div className={styles.content}>
                         <h2 className={styles.title}>CONGRATULATIONS</h2>
                         <p className={styles.descText}>You have been drafted. To finalize your spot, announce your deployment and submit the link.</p>

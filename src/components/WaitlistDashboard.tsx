@@ -1,11 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import styles from './WaitlistDashboard.module.css';
 import CountdownTimer from './CountdownTimer';
 import Logo from './Logo';
-import { Shield, Edit3, Check, X } from "lucide-react";
 
 interface PlatformConfig {
     deploymentDate: string | null;
@@ -25,21 +23,6 @@ interface WaitlistDashboardProps {
 export default function WaitlistDashboard({ userSession, onLogout }: WaitlistDashboardProps) {
     const [config, setConfig] = useState<PlatformConfig | null>(null);
     const [copied, setCopied] = useState(false);
-
-    // Wallet States
-    const [isEditing, setIsEditing] = useState(false);
-    const [evm, setEvm] = useState(userSession?.walletEvm || '');
-    const [sol, setSol] = useState(userSession?.walletSol || '');
-    const [tempEvm, setTempEvm] = useState(evm);
-    const [tempSol, setTempSol] = useState(sol);
-    const [isSaving, setIsSaving] = useState(false);
-
-    useEffect(() => {
-        if (userSession) {
-            setEvm(userSession.walletEvm || '');
-            setSol(userSession.walletSol || '');
-        }
-    }, [userSession]);
 
     useEffect(() => {
         fetch('/api/config')
@@ -68,40 +51,6 @@ export default function WaitlistDashboard({ userSession, onLogout }: WaitlistDas
         setTimeout(() => setCopied(false), 2000);
     };
 
-    const handleStartEdit = () => {
-        setTempEvm(evm);
-        setTempSol(sol);
-        setIsEditing(true);
-    };
-
-    const handleSave = async () => {
-        setIsSaving(true);
-        try {
-            const res = await fetch('/api/user/sync', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    walletEvm: tempEvm,
-                    walletSol: tempSol,
-                    handle: userSession?.handle,
-                    email: userSession?.email
-                }),
-            });
-            const data = await res.json();
-            if (data.success) {
-                setEvm(tempEvm);
-                setSol(tempSol);
-                setIsEditing(false);
-            } else {
-                alert(data.error || 'Failed to update nodes');
-            }
-        } catch (err) {
-            console.error('Save error:', err);
-        } finally {
-            setIsSaving(false);
-        }
-    };
-
     return (
         <main className={styles.container}>
             <header className={styles.topHeader}>
@@ -124,61 +73,6 @@ export default function WaitlistDashboard({ userSession, onLogout }: WaitlistDas
                         <button className={styles.logoutBtn} onClick={onLogout}>
                             LOGOUT
                         </button>
-                    )}
-                </div>
-            </div>
-
-            {/* Payout Strip - Compact Specification V1 */}
-            <div className={`${styles.payoutStrip} ${styles.glass} ${isEditing ? styles.editing : ''}`}>
-                <div className={styles.stripLabel}>
-                    <Shield size={12} className={styles.iconGreen} />
-                    <span>PAYOUT_NODES</span>
-                </div>
-
-                <div className={styles.divider}></div>
-
-                <div className={styles.nodeGroup}>
-                    <span className={styles.nodePrefix}>EVM</span>
-                    {!isEditing ? (
-                        <span className={styles.nodeText}>{evm ? `${evm.slice(0, 6)}...${evm.slice(-4)}` : 'NOT_SET'}</span>
-                    ) : (
-                        <input
-                            className={styles.stripInput}
-                            value={tempEvm}
-                            onChange={e => setTempEvm(e.target.value)}
-                            placeholder="0x..."
-                        />
-                    )}
-                </div>
-
-                <div className={styles.divider}></div>
-
-                <div className={styles.nodeGroup}>
-                    <span className={styles.nodePrefix}>SOL</span>
-                    {!isEditing ? (
-                        <span className={styles.nodeText}>{sol ? `${sol.slice(0, 6)}...${sol.slice(-4)}` : 'NOT_SET'}</span>
-                    ) : (
-                        <input
-                            className={styles.stripInput}
-                            value={tempSol}
-                            onChange={e => setTempSol(e.target.value)}
-                            placeholder="Address..."
-                        />
-                    )}
-                </div>
-
-                <div className={styles.divider}></div>
-
-                <div className={styles.stripActions}>
-                    {!isEditing ? (
-                        <button className={styles.editBtn} onClick={handleStartEdit}><Edit3 size={14} /></button>
-                    ) : (
-                        <>
-                            <button className={styles.saveBtn} onClick={handleSave} disabled={isSaving}>
-                                {isSaving ? '...' : <Check size={14} />}
-                            </button>
-                            <button className={styles.cancelBtn} onClick={() => setIsEditing(false)}><X size={14} /></button>
-                        </>
                     )}
                 </div>
             </div>
