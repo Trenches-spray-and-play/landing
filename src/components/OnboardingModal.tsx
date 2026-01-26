@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styles from './OnboardingModal.module.css';
-import { Check, AlertCircle, Loader2 } from 'lucide-react';
+import { Check, Loader2 } from 'lucide-react';
 
 interface PlatformConfig {
     telegramUrl: string;
@@ -28,41 +28,30 @@ interface OnboardingModalProps {
     onComplete: (userData: UserData) => void;
 }
 
-// Validate Twitter/X URL format
-function isValidTwitterUrl(url: string): boolean {
-    try {
-        const parsed = new URL(url);
-        return (parsed.hostname === 'twitter.com' || parsed.hostname === 'x.com') &&
-               (parsed.pathname.includes('/status/') || parsed.pathname.includes('/i/'));
-    } catch {
-        return false;
-    }
-}
+const CONFIRM_DELAY = 10000; // 10 seconds in ms
 
 export default function OnboardingModal({ isOpen, onClose, onComplete }: OnboardingModalProps) {
     const [step, setStep] = useState(1);
     const [isSyncing, setIsSyncing] = useState(false);
     const [config, setConfig] = useState<PlatformConfig | null>(null);
     const [configLoading, setConfigLoading] = useState(true);
-
-    // Error and success states
     const [error, setError] = useState<string | null>(null);
-    const [urlError, setUrlError] = useState<string | null>(null);
 
-    // Social task states - tracks both "clicked" and "confirmed"
-    const [telegramClicked, setTelegramClicked] = useState(false);
-    const [twitterClicked, setTwitterClicked] = useState(false);
+    // Social confirmation states
     const [telegramConfirmed, setTelegramConfirmed] = useState(false);
     const [twitterConfirmed, setTwitterConfirmed] = useState(false);
 
-    // Step 2: Verification
-    const [verificationLink, setVerificationLink] = useState('');
+    // Timer refs for silent confirmation
+    const telegramTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const twitterTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const shareTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Persistence helper
+    // Step 2: Share state
+    const [shareConfirmed, setShareConfirmed] = useState(false);
+
     const STORAGE_KEY = 'trenches_onboarding_state';
 
     useEffect(() => {
-        // Only run in browser
         if (typeof window === 'undefined') return;
 
         setConfigLoading(true);
@@ -81,35 +70,35 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
             if (saved) {
                 const data = JSON.parse(saved);
                 if (data.step) setStep(data.step);
-                if (data.verificationLink) setVerificationLink(data.verificationLink);
-                // Also restore social confirmation states
-                if (data.telegramConfirmed) {
-                    setTelegramClicked(true);
-                    setTelegramConfirmed(true);
-                }
-                if (data.twitterConfirmed) {
-                    setTwitterClicked(true);
-                    setTwitterConfirmed(true);
-                }
+                if (data.telegramConfirmed) setTelegramConfirmed(true);
+                if (data.twitterConfirmed) setTwitterConfirmed(true);
             }
         } catch (e) {
             console.error("Failed to restore onboarding state");
         }
     }, []);
 
-    // Save state to localStorage whenever it changes
+    // Save state to localStorage
     useEffect(() => {
         if (typeof window === 'undefined') return;
 
         if (isOpen) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify({
                 step,
-                verificationLink,
                 telegramConfirmed,
                 twitterConfirmed
             }));
         }
-    }, [step, verificationLink, telegramConfirmed, twitterConfirmed, isOpen]);
+    }, [step, telegramConfirmed, twitterConfirmed, isOpen]);
+
+    // Cleanup timers on unmount
+    useEffect(() => {
+        return () => {
+            if (telegramTimerRef.current) clearTimeout(telegramTimerRef.current);
+            if (twitterTimerRef.current) clearTimeout(twitterTimerRef.current);
+            if (shareTimerRef.current) clearTimeout(shareTimerRef.current);
+        };
+    }, []);
 
     // Clear error after 5 seconds
     useEffect(() => {
@@ -128,45 +117,42 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
     const defaultTweetText = `Just enlisted in the @traboraofficial deployment queue. Spray and Pray!\n\nhttps://${referralDomain}`;
     const tweetText = encodeURIComponent(config?.onboardingTweetText || defaultTweetText);
 
-    const handleSocialMissions = () => {
-        setError(null);
-        setStep(2);
-    };
-
     const handleTelegramClick = () => {
-        setTelegramClicked(true);
+        if (telegramConfirmed || telegramTimerRef.current) return;
+
+        // Start silent 10-second timer
+        telegramTimerRef.current = setTimeout(() => {
+            setTelegramConfirmed(true);
+            telegramTimerRef.current = null;
+        }, CONFIRM_DELAY);
     };
 
     const handleTwitterClick = () => {
-        setTwitterClicked(true);
+        if (twitterConfirmed || twitterTimerRef.current) return;
+
+        // Start silent 10-second timer
+        twitterTimerRef.current = setTimeout(() => {
+            setTwitterConfirmed(true);
+            twitterTimerRef.current = null;
+        }, CONFIRM_DELAY);
     };
 
-    const handleVerificationLinkChange = (value: string) => {
-        setVerificationLink(value);
-        setUrlError(null);
+    const handleShareClick = () => {
+        if (shareConfirmed || shareTimerRef.current) return;
 
-        // Validate as user types (only show error if they've typed something)
-        if (value && !isValidTwitterUrl(value)) {
-            setUrlError('Please enter a valid Twitter/X post URL (e.g., https://x.com/user/status/123...)');
-        }
+        // Start silent 10-second timer, then auto-finalize
+        shareTimerRef.current = setTimeout(() => {
+            setShareConfirmed(true);
+            shareTimerRef.current = null;
+            handleFinalize();
+        }, CONFIRM_DELAY);
     };
 
-    const handleFinalize = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError(null);
-        setUrlError(null);
+    const handleContinue = () => {
+        setStep(2);
+    };
 
-        // Final validation
-        if (!verificationLink) {
-            setUrlError('Please enter your verification post URL');
-            return;
-        }
-
-        if (!isValidTwitterUrl(verificationLink)) {
-            setUrlError('Please enter a valid Twitter/X post URL');
-            return;
-        }
-
+    const handleFinalize = async () => {
         setIsSyncing(true);
 
         try {
@@ -175,56 +161,59 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     referredByCode: localStorage.getItem('referralCode') || undefined,
-                    verificationLink,
                 }),
             });
 
             const data = await res.json();
 
             if (res.ok && data.success && data.user) {
-                // Clear persistence on success
                 localStorage.removeItem(STORAGE_KEY);
                 localStorage.removeItem('referralCode');
                 onComplete(data.user);
             } else {
-                // Handle validation errors
                 if (data.details && Array.isArray(data.details)) {
                     setError(data.details.join(' '));
                 } else {
-                    setError(data.error || 'Failed to finalize enlistment. Please try again.');
+                    setError(data.error || 'Failed to finalize. Please try again.');
                 }
             }
         } catch (err) {
             console.error('Sync error:', err);
-            setError('Network error. Please check your connection and try again.');
+            setError('Network error. Please check your connection.');
         } finally {
             setIsSyncing(false);
         }
     };
+
+    const canContinue = telegramConfirmed && twitterConfirmed;
 
     return (
         <div className={styles.overlay}>
             <div className={styles.modal}>
                 <button className={styles.closeBtn} onClick={onClose}>×</button>
 
-                <div className={styles.stepper}>
-                    <div className={`${styles.step} ${step >= 1 ? styles.active : ''}`}>01</div>
-                    <div className={styles.line}></div>
-                    <div className={`${styles.step} ${step >= 2 ? styles.active : ''}`}>02</div>
+                {/* Step Indicator */}
+                <div className={styles.stepIndicator}>
+                    <span className={step > 1 ? styles.stepDone : styles.stepActive}>
+                        {step > 1 ? <Check size={14} /> : '1'}
+                    </span>
+                    <div className={styles.stepLine} />
+                    <span className={step === 2 ? styles.stepActive : styles.stepInactive}>2</span>
                 </div>
 
                 {/* Error Toast */}
                 {error && (
                     <div className={styles.errorToast}>
-                        <AlertCircle size={16} />
                         <span>{error}</span>
                     </div>
                 )}
 
                 {step === 1 && (
                     <div className={styles.content}>
-                        <h2 className={styles.title}>SOCIAL INTEL</h2>
-                        <p className={styles.desc}>Join the command center and coordinate with other believers.</p>
+                        <h2 className={styles.title}>CONNECT YOUR SOCIALS</h2>
+                        <p className={styles.desc}>
+                            Join our community channels to stay updated and connect with other members.
+                        </p>
 
                         {configLoading ? (
                             <div className={styles.loadingState}>
@@ -234,66 +223,59 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
                         ) : (
                             <>
                                 <div className={styles.missionGrid}>
-                                    {/* Telegram Task */}
-                                    <div className={styles.missionItem}>
-                                        <a
-                                            href={telegramUrl}
-                                            className={`${styles.missionButton} ${telegramConfirmed ? styles.completed : ''}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            onClick={handleTelegramClick}
-                                        >
-                                            <span className={styles.missionIcon}>
-                                                {telegramConfirmed ? <Check size={18} color="#00ff00" /> : '📱'}
-                                            </span>
+                                    {/* Telegram */}
+                                    <a
+                                        href={telegramUrl}
+                                        className={`${styles.missionButton} ${telegramConfirmed ? styles.completed : ''}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        onClick={handleTelegramClick}
+                                    >
+                                        <span className={styles.missionIcon}>
+                                            {telegramConfirmed ? (
+                                                <Check size={20} color="#00ff00" />
+                                            ) : (
+                                                '📱'
+                                            )}
+                                        </span>
+                                        <div className={styles.missionContent}>
                                             <span className={styles.missionText}>JOIN TELEGRAM</span>
-                                        </a>
-                                        {telegramClicked && !telegramConfirmed && (
-                                            <label className={styles.confirmLabel}>
-                                                <input
-                                                    type="checkbox"
-                                                    checked={telegramConfirmed}
-                                                    onChange={(e) => setTelegramConfirmed(e.target.checked)}
-                                                    className={styles.confirmCheckbox}
-                                                />
-                                                <span>I joined the Telegram</span>
-                                            </label>
-                                        )}
-                                    </div>
+                                            {telegramConfirmed && (
+                                                <span className={styles.missionSuccess}>Connected!</span>
+                                            )}
+                                        </div>
+                                    </a>
 
-                                    {/* Twitter Task */}
-                                    <div className={styles.missionItem}>
-                                        <a
-                                            href={twitterUrl}
-                                            className={`${styles.missionButton} ${twitterConfirmed ? styles.completed : ''}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            onClick={handleTwitterClick}
-                                        >
-                                            <span className={styles.missionIcon}>
-                                                {twitterConfirmed ? <Check size={18} color="#00ff00" /> : '𝕏'}
-                                            </span>
+                                    {/* Twitter/X */}
+                                    <a
+                                        href={twitterUrl}
+                                        className={`${styles.missionButton} ${twitterConfirmed ? styles.completed : ''}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        onClick={handleTwitterClick}
+                                    >
+                                        <span className={styles.missionIcon}>
+                                            {twitterConfirmed ? (
+                                                <Check size={20} color="#00ff00" />
+                                            ) : (
+                                                '𝕏'
+                                            )}
+                                        </span>
+                                        <div className={styles.missionContent}>
                                             <span className={styles.missionText}>FOLLOW ON X</span>
-                                        </a>
-                                        {twitterClicked && !twitterConfirmed && (
-                                            <label className={styles.confirmLabel}>
-                                                <input
-                                                    type="checkbox"
-                                                    checked={twitterConfirmed}
-                                                    onChange={(e) => setTwitterConfirmed(e.target.checked)}
-                                                    className={styles.confirmCheckbox}
-                                                />
-                                                <span>I followed on X</span>
-                                            </label>
-                                        )}
-                                    </div>
+                                            {twitterConfirmed && (
+                                                <span className={styles.missionSuccess}>Connected!</span>
+                                            )}
+                                        </div>
+                                    </a>
                                 </div>
+
                                 <button
                                     className={styles.nextBtn}
-                                    onClick={handleSocialMissions}
-                                    disabled={!telegramConfirmed || !twitterConfirmed}
+                                    onClick={handleContinue}
+                                    disabled={!canContinue}
                                 >
-                                    CONTINUE ENLISTMENT
+                                    {canContinue ? 'CONTINUE' : 'Complete tasks above to continue'}
                                 </button>
                             </>
                         )}
@@ -302,47 +284,42 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
 
                 {step === 2 && (
                     <div className={styles.content}>
-                        <h2 className={styles.title}>CONGRATULATIONS</h2>
-                        <p className={styles.descText}>You have been drafted. To finalize your spot, announce your deployment and submit the link.</p>
+                        <h2 className={styles.title}>SHARE</h2>
+                        <p className={styles.descText}>
+                            Help spread the word! Share your enlistment with your followers.
+                        </p>
 
-                        <div className={styles.verificationBox}>
-                            <a
-                                href={`https://x.com/intent/tweet?text=${tweetText}`}
-                                className={styles.tweetBtn}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                𝕏 POST DEPLOYMENT STATUS
-                            </a>
+                        <div className={styles.shareBox}>
+                            {!shareConfirmed && !isSyncing ? (
+                                <a
+                                    href={`https://x.com/intent/tweet?text=${tweetText}`}
+                                    className={styles.shareBtn}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={handleShareClick}
+                                >
+                                    𝕏 SHARE ON X
+                                </a>
+                            ) : (
+                                <div className={styles.shareComplete}>
+                                    <Check size={20} color="#00ff00" />
+                                    <span>Shared!</span>
+                                </div>
+                            )}
                         </div>
 
-                        <form onSubmit={handleFinalize} className={styles.form}>
-                            <div className={styles.inputGroup}>
-                                <label className={styles.label}>SUBMIT X POST LINK</label>
-                                <input
-                                    type="url"
-                                    placeholder="https://x.com/yourname/status/123..."
-                                    className={`${styles.input} ${urlError ? styles.inputError : ''}`}
-                                    value={verificationLink}
-                                    onChange={(e) => handleVerificationLinkChange(e.target.value)}
-                                    required
-                                    disabled={isSyncing}
-                                />
-                                {urlError && (
-                                    <p className={styles.fieldError}>{urlError}</p>
-                                )}
+                        {isSyncing && (
+                            <div className={styles.finalizingState}>
+                                <Loader2 size={24} className={styles.spinner} />
+                                <span>Finalizing your spot...</span>
                             </div>
-                            <button type="submit" className={styles.finalizeBtn} disabled={isSyncing || !!urlError}>
-                                {isSyncing ? (
-                                    <>
-                                        <Loader2 size={16} className={styles.spinner} />
-                                        FINALIZING...
-                                    </>
-                                ) : (
-                                    'FINALIZE ENLISTMENT'
-                                )}
-                            </button>
-                        </form>
+                        )}
+
+                        {!shareConfirmed && !isSyncing && (
+                            <p className={styles.skipHint}>
+                                Click the share button above to complete your registration
+                            </p>
+                        )}
                     </div>
                 )}
             </div>

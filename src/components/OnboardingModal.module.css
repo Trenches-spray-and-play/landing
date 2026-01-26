@@ -16,10 +16,11 @@
     background: #050505;
     border: 1px solid #1a1a1a;
     width: 90%;
-    max-width: 500px;
-    padding: 3rem;
+    max-width: 480px;
+    padding: 2.5rem;
     position: relative;
     box-shadow: 0 0 50px rgba(0, 255, 0, 0.05);
+    border-radius: 8px;
 }
 
 @media (max-width: 480px) {
@@ -28,14 +29,13 @@
         width: 95%;
     }
 
-    .stepper {
+    .stepIndicator {
         margin-bottom: 1.5rem;
-        gap: 0.5rem;
     }
 
     .title {
         font-size: 1rem;
-        margin-bottom: 1rem;
+        margin-bottom: 0.75rem;
     }
 
     .desc,
@@ -50,12 +50,7 @@
     }
 
     .missionButton {
-        padding: 0.75rem 1rem;
-        gap: 1rem;
-    }
-
-    .form {
-        gap: 1rem;
+        padding: 1rem;
     }
 }
 
@@ -66,45 +61,68 @@
     background: none;
     border: none;
     color: #444;
-    font-size: 2rem;
+    font-size: 1.5rem;
     cursor: pointer;
     line-height: 1;
+    transition: color 0.2s;
 }
 
 .closeBtn:hover {
     color: #fff;
 }
 
-.stepper {
+/* Step Indicator */
+.stepIndicator {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
-    margin-bottom: 3rem;
-    font-family: 'Courier New', Courier, monospace;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
 }
 
-.step {
+.stepActive {
     width: 32px;
     height: 32px;
-    border: 1px solid #222;
+    border-radius: 50%;
+    border: 2px solid #00ff00;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 0.8rem;
+    font-weight: bold;
+    color: #00ff00;
+    background: rgba(0, 255, 0, 0.1);
+}
+
+.stepDone {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #00ff00;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #00ff00;
+    color: #000;
+}
+
+.stepInactive {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
     color: #444;
 }
 
-.step.active {
-    border-color: var(--accent-color, #00ff00);
-    color: var(--accent-color, #00ff00);
-    box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
-}
-
-.line {
-    width: 20px;
-    height: 1px;
-    background: #222;
+.stepLine {
+    width: 40px;
+    height: 2px;
+    background: #333;
 }
 
 .content {
@@ -112,10 +130,11 @@
 }
 
 .title {
-    font-family: 'Courier New', Courier, monospace;
-    letter-spacing: 0.3rem;
-    font-size: 1.2rem;
-    margin-bottom: 1.5rem;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.15rem;
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
     color: #fff;
     text-transform: uppercase;
 }
@@ -124,205 +143,155 @@
     font-size: 0.9rem;
     color: #888;
     line-height: 1.6;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
 }
 
 .descText {
     font-size: 0.9rem;
     color: #888;
     line-height: 1.6;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
-/* Step 1 */
-.twitterBtn {
-    background: var(--accent-color, #00ff00);
-    color: #000;
-    border: none;
-    padding: 1rem 2rem;
-    font-weight: bold;
-    font-family: 'Courier New', Courier, monospace;
-    cursor: pointer;
-    letter-spacing: 0.1rem;
-    width: 100%;
-    transition: all 0.2s;
-}
-
-.twitterBtn:hover:not(:disabled) {
-    background: #00cc00;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 255, 0, 0.3);
-}
-
-/* Step 2 */
+/* Mission Grid */
 .missionGrid {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
 }
 
 .missionButton {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid #1a1a1a;
-    padding: 1rem 1.5rem;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid #222;
+    padding: 1.25rem 1.5rem;
     text-decoration: none;
     transition: all 0.2s;
+    border-radius: 8px;
 }
 
 .missionButton:hover {
     background: rgba(255, 255, 255, 0.05);
-    border-color: #333;
+    border-color: #444;
 }
 
 .missionButton.completed {
     border-color: #00ff00;
-    box-shadow: 0 0 10px rgba(0, 255, 0, 0.1);
+    background: rgba(0, 255, 0, 0.05);
 }
 
 .missionIcon {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.missionContent {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
 }
 
 .missionText {
     color: #fff;
-    font-size: 0.8rem;
-    font-family: 'Courier New', Courier, monospace;
-    letter-spacing: 0.1rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.05rem;
 }
 
+.missionSuccess {
+    color: #00ff00;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Next Button */
 .nextBtn {
     background: none;
     border: 1px solid #333;
     color: #666;
     width: 100%;
     padding: 1rem;
-    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.05rem;
     cursor: pointer;
     transition: all 0.2s;
+    border-radius: 6px;
 }
 
-.nextBtn:hover {
-    border-color: #555;
-    color: #fff;
+.nextBtn:hover:not(:disabled) {
+    border-color: #00ff00;
+    color: #00ff00;
+    background: rgba(0, 255, 0, 0.05);
 }
 
 .nextBtn:disabled {
-    opacity: 0.3;
+    opacity: 0.5;
     cursor: not-allowed;
-    border-color: #222;
-    color: #444;
 }
 
-/* Step 3 & 4 forms */
-.form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+/* Share Box */
+.shareBox {
+    margin-bottom: 1.5rem;
 }
 
-.inputGroup {
-    text-align: left;
-}
-
-.label {
-    display: block;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.7rem;
-    color: #555;
-    margin-bottom: 0.5rem;
-}
-
-.input {
-    width: 100%;
-    background: #111;
-    border: 1px solid #222;
-    padding: 0.75rem 1rem;
-    color: #fff;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.8rem;
-}
-
-.submitBtn,
-.finalizeBtn {
-    background: var(--accent-color, #00ff00);
-    color: #000;
-    border: none;
-    padding: 1rem;
-    font-weight: bold;
-    font-family: 'Courier New', Courier, monospace;
-    cursor: pointer;
-    width: 100%;
-}
-
-.verificationBox {
-    margin-bottom: 2rem;
-}
-
-.tweetBtn {
+.shareBtn {
     display: block;
     background: #fff;
     color: #000;
     text-decoration: none;
-    padding: 1rem;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.8rem;
-    font-weight: bold;
+    padding: 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 800;
     text-align: center;
-}
-
-.tweetBtn:hover {
-    background: #eee;
-}
-
-/* Mission item wrapper for checkbox below button */
-.missionItem {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-/* Confirmation checkbox label */
-.confirmLabel {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.75rem;
-    color: #888;
-    cursor: pointer;
-    padding: 0.5rem;
-    background: rgba(0, 255, 0, 0.05);
-    border: 1px dashed #333;
+    border-radius: 8px;
     transition: all 0.2s;
 }
 
-.confirmLabel:hover {
-    border-color: #555;
-    color: #aaa;
+.shareBtn:hover {
+    background: #00ff00;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 255, 0, 0.3);
 }
 
-.confirmCheckbox {
-    width: 16px;
-    height: 16px;
-    accent-color: var(--accent-color, #00ff00);
-    cursor: pointer;
+.shareComplete {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1.25rem;
+    background: rgba(0, 255, 0, 0.1);
+    border: 1px solid #00ff00;
+    border-radius: 8px;
+    color: #00ff00;
+    font-weight: 700;
+    font-size: 0.9rem;
 }
 
-/* Input error state */
-.inputError {
-    border-color: #ff4444 !important;
-    background: rgba(255, 68, 68, 0.05) !important;
+/* Finalizing State */
+.finalizingState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+    color: #888;
+    font-size: 0.85rem;
 }
 
-.errorText {
-    display: block;
-    color: #ff4444;
-    font-size: 0.7rem;
-    font-family: 'Courier New', Courier, monospace;
+/* Skip Hint */
+.skipHint {
+    color: #555;
+    font-size: 0.8rem;
     margin-top: 0.5rem;
 }
 
@@ -330,14 +299,15 @@
 .errorToast {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.75rem;
     background: rgba(255, 68, 68, 0.1);
     border: 1px solid rgba(255, 68, 68, 0.3);
     padding: 0.75rem 1rem;
     margin-bottom: 1.5rem;
     color: #ff6666;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
+    border-radius: 6px;
     animation: slideIn 0.3s ease-out;
 }
 
@@ -360,8 +330,7 @@
     gap: 1rem;
     padding: 3rem;
     color: #666;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
 }
 
 /* Spinner Animation */
@@ -376,26 +345,4 @@
     to {
         transform: rotate(360deg);
     }
-}
-
-/* Field Error */
-.fieldError {
-    color: #ff6666;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.7rem;
-    margin-top: 0.5rem;
-    text-align: left;
-}
-
-/* Button with spinner */
-.finalizeBtn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-}
-
-.finalizeBtn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
 }
