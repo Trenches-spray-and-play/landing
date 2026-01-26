@@ -41,6 +41,10 @@ model User {
   campaignWaitlists   CampaignWaitlist[]
   userRaids           UserRaid[]
   contentSubmissions  UserContentSubmission[]
+
+  // Indexes for query optimization
+  @@index([referredById])  // For counting referrals efficiently
+  @@index([createdAt])     // For queue position calculations
 }
 
 model Trench {

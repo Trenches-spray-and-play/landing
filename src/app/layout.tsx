@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     description: "The fastest path to 1.5X ROI. Spray $1,000 and secure $1,500 in 24 hours. Powered by Believe.",
     images: [
       {
-        url: "/trenches-og-v4.png",
+        url: "/trenches-og-final.png",
         width: 1200,
         height: 630,
         alt: "Trenches: Spray & Play"
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Trenches: Spray & Play",
     description: "The fastest path to 1.5X ROI. Spray $1,000 and secure $1,500 in 24 hours. Powered by Believe.",
-    images: ["/trenches-og-v4.png"],
+    images: ["/trenches-og-final.png"],
   },
 };
 
