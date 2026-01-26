@@ -9,6 +9,13 @@ import { ArrowDown, Info, ArrowRight } from "lucide-react";
 export default function MinimalVariation() {
     const [isDarkMode, setIsDarkMode] = React.useState(true);
     const [depositAmount, setDepositAmount] = React.useState(1000);
+    const [selectedTier, setSelectedTier] = React.useState('RAPID');
+
+    const tiers = {
+        'RAPID': { duration: '24 HOURS', min: 5, cap: 1000, desc: 'ENTRY_LEVEL' },
+        'MID': { duration: '7 DAYS', min: 100, cap: 10000, desc: 'STRATEGIC_DEPTH' },
+        'DEEP': { duration: '30 DAYS', min: 10000, cap: 100000, desc: 'INSTITUTIONAL' }
+    };
 
     const sections = [
         {
@@ -16,14 +23,37 @@ export default function MinimalVariation() {
             heading: "See the Result.",
             custom: (
                 <div className={styles.v5Calculator}>
+                    <div className={styles.v5TierSelector}>
+                        {Object.keys(tiers).map(t => (
+                            <button
+                                key={t}
+                                onClick={() => {
+                                    setSelectedTier(t);
+                                    const tierData = (tiers as any)[t];
+                                    if (depositAmount > tierData.cap) setDepositAmount(tierData.cap);
+                                    if (depositAmount < tierData.min) setDepositAmount(tierData.min);
+                                }}
+                                className={`${styles.v5TierBtn} ${selectedTier === t ? styles.v5TierBtnActive : ''}`}
+                            >
+                                <span className={styles.v5TierLabel}>{t}</span>
+                                <span className={styles.v5TierSub}>{(tiers as any)[t].desc}</span>
+                            </button>
+                        ))}
+                    </div>
+
                     <div className={styles.v5CalcInputs}>
                         <div className={styles.v5CalcGroup}>
-                            <label>YOUR_DEPOSIT</label>
+                            <div className={styles.v5LabelFlex}>
+                                <label>YOUR_DEPOSIT</label>
+                                <span className={styles.v5CapLabel}>
+                                    RANGE: ${(tiers as any)[selectedTier].min.toLocaleString()} - ${(tiers as any)[selectedTier].cap.toLocaleString()}
+                                </span>
+                            </div>
                             <input
                                 type="range"
-                                min="10"
-                                max="10000"
-                                step="10"
+                                min={(tiers as any)[selectedTier].min}
+                                max={(tiers as any)[selectedTier].cap}
+                                step={(tiers as any)[selectedTier].min === 5 ? 1 : 10}
                                 value={depositAmount}
                                 onChange={(e) => setDepositAmount(Number(e.target.value))}
                                 className={styles.v5Slider}
@@ -32,7 +62,10 @@ export default function MinimalVariation() {
                         </div>
                         <div className={styles.v5CalcArrow}><ArrowRight size={24} /></div>
                         <div className={styles.v5CalcGroup}>
-                            <label>YOUR_PAYOUT</label>
+                            <div className={styles.v5LabelFlex}>
+                                <label>YOUR_PAYOUT</label>
+                                <span className={styles.v5DurationLabel}>DURATION: {(tiers as any)[selectedTier].duration}</span>
+                            </div>
                             <div className={`${styles.v5CalcValue} ${styles.accentZEN}`}>${(depositAmount * 1.5).toLocaleString()}</div>
                         </div>
                     </div>
@@ -47,7 +80,10 @@ export default function MinimalVariation() {
                     <div className={styles.v5Node}>YOUR_WALLET</div>
                     <div className={styles.v5Line}>
                         <motion.div
-                            animate={{ x: [0, 200, 0] }}
+                            animate={{
+                                x: [0, "var(--anim-x, 200px)", 0],
+                                y: [0, "var(--anim-y, 0)", 0]
+                            }}
                             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                             className={styles.v5Dot}
                         />
@@ -55,7 +91,10 @@ export default function MinimalVariation() {
                     <div className={styles.v5Node}>RESERVE_FUND</div>
                     <div className={styles.v5Line}>
                         <motion.div
-                            animate={{ x: [0, -200, 0] }}
+                            animate={{
+                                x: [0, "var(--anim-x-rev, -200px)", 0],
+                                y: [0, "var(--anim-y-rev, 0)", 0]
+                            }}
                             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 2 }}
                             className={`${styles.v5Dot} ${styles.v5DotLarge}`}
                         />
@@ -128,16 +167,15 @@ export default function MinimalVariation() {
         <div className={styles.v5Container} data-theme={isDarkMode ? 'dark' : 'light'}>
             <div className={styles.v5Meta}>
                 <Logo variant="horizontal" className={styles.v5Logo} />
-                <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-                    <span>VARIATION_05 // FULL_INTELLIGENCE</span>
+                <div className={styles.v5MetaRight}>
+                    <button className={styles.v5MetaCTA}>GET STARTED</button>
                     <button
                         onClick={() => setIsDarkMode(!isDarkMode)}
                         className={styles.themeToggle}
                     >
-                        {isDarkMode ? 'SWITCH_TO_LIGHT' : 'SWITCH_TO_DARK'}
+                        {isDarkMode ? 'LIGHT' : 'DARK'}
                     </button>
                 </div>
-                <div className={styles.v5ScrollHint}>SCROLL_TO_EXPLORE <ArrowDown size={12} /></div>
             </div>
 
             <main className={styles.v5MainFull}>
@@ -179,10 +217,12 @@ export default function MinimalVariation() {
                 <section className={styles.v5Trust}>
                     <div className={styles.v5TrustLogos}>
                         <span>POWERED_BY //</span>
+                        <span>BELIEVE TRUST</span>
+                        <span>HYPEREVM</span>
                         <span>SOLANA</span>
-                        <span>BASE</span>
                         <span>GOOGLE_CLOUD</span>
-                        <span>METAMASK</span>
+                        <span>BASE</span>
+                        <span>ANYWALLET</span>
                     </div>
                 </section>
 
