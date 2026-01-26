@@ -1,26 +1,19 @@
 {
-  "name": "trenches-web",
+  "name": "@trenches/landing",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio",
-    "prisma:seed": "npx tsx prisma/seed.ts",
     "setup:env": "node scripts/create-env-local.js",
-    "setup": "npm run setup:env && npm run prisma:generate",
-    "test:db": "node scripts/test-db-connection.js",
-    "update:db": "node ../scripts/update-env-database.js"
-  },
-  "prisma": {
-    "seed": "npx tsx prisma/seed.ts"
+    "test:db": "node scripts/test-db-connection.js"
   },
   "dependencies": {
-    "@prisma/client": "^5.19.1",
+    "@trenches/database": "*",
+    "@trenches/ui": "*",
+    "@trenches/utils": "*",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.90.1",
     "@upstash/ratelimit": "^2.0.8",
@@ -40,7 +33,6 @@
     "agentation": "^1.3.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
-    "prisma": "^5.19.1",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
     "typescript": "^5"
