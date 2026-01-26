@@ -1,0 +1,943 @@
+.hubContainer {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 6rem 2rem;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    background: #000;
+    color: #fff;
+}
+
+.hubHeader {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.hubHeader h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    letter-spacing: -1px;
+}
+
+.hubHeader p {
+    color: #888;
+    font-size: 1.2rem;
+}
+
+.hubGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .hubGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.hubCard {
+    background: #0a0a0a;
+    border: 1px solid #1a1a1a;
+    border-radius: 20px;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.hubCard:hover {
+    border-color: #333;
+    background: #111;
+    transform: translateY(-2px);
+}
+
+.cardIcon {
+    background: rgba(255, 255, 255, 0.05);
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.cardContent h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.cardContent p {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.cardArrow {
+    margin-left: auto;
+    color: #444;
+    transition: transform 0.2s ease;
+}
+
+.hubCard:hover .cardArrow {
+    transform: translateX(5px);
+    color: #fff;
+}
+
+.hubFooter {
+    margin-top: 4rem;
+    text-align: center;
+    border-top: 1px solid #1a1a1a;
+    padding-top: 2rem;
+}
+
+.hubFooter a {
+    color: #00FF66;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Variation 1: Modern Startup */
+.v1Container {
+    background: #ffffff;
+    color: #000;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+}
+
+.v1Nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navLinks {
+    display: none;
+    gap: 2rem;
+    color: #666;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+@media (min-width: 768px) {
+    .navLinks {
+        display: flex;
+    }
+}
+
+.v1BtnPrimary {
+    background: #000;
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.v1Hero {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+@media (min-width: 1024px) {
+    .v1Hero {
+        grid-template-columns: 1fr 1fr;
+        padding: 8rem 2rem;
+    }
+}
+
+.heroContent h1 {
+    font-size: 4rem;
+    line-height: 1.1;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    letter-spacing: -2px;
+}
+
+.heroContent h1 span {
+    color: #00FF66;
+    text-shadow: 0 0 20px rgba(0, 255, 102, 0.2);
+}
+
+.heroContent p {
+    font-size: 1.25rem;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+    max-width: 500px;
+}
+
+.heroActions {
+    display: flex;
+    gap: 1rem;
+}
+
+.v1BtnPrimaryLarge {
+    background: #000;
+    color: #fff;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.v1BtnSecondaryLarge {
+    background: #f4f4f4;
+    color: #000;
+    border: 1px solid #e5e5e5;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.badge {
+    display: inline-block;
+    background: #f0fdf4;
+    color: #166534;
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.heroVisual {
+    position: relative;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 32px;
+    border: 1px solid #e2e8f0;
+}
+
+.mockDashboard {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
+
+.mockHead {
+    padding: 0.75rem 1.5rem;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.mockDots {
+    display: flex;
+    gap: 6px;
+}
+
+.mockDots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #e2e8f0;
+}
+
+.mockUrl {
+    color: #94a3b8;
+    font-size: 0.7rem;
+    font-family: monospace;
+}
+
+.mockBody {
+    height: 300px;
+    display: flex;
+}
+
+.mockSidebar {
+    width: 60px;
+    border-right: 1px solid #f1f5f9;
+}
+
+.mockMain {
+    flex: 1;
+    padding: 1.5rem;
+}
+
+.mockCard {
+    height: 80px;
+    background: #f8fafc;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.mockGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.mockCardSmall {
+    height: 120px;
+    background: #f8fafc;
+    border-radius: 12px;
+}
+
+.v1Features {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 6rem 2rem;
+}
+
+.sectionHeader {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.sectionHeader h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
+
+.sectionHeader p {
+    color: #666;
+}
+
+.v1Grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 768px) {
+    .v1Grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.v1Card {
+    padding: 2.5rem;
+    border-radius: 24px;
+    border: 1px solid #f1f5f9;
+    background: #fff;
+    transition: all 0.3s ease;
+}
+
+.v1Card:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    transform: translateY(-5px);
+}
+
+.v1CardIcon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.v1Card h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.v1Card p {
+    color: #666;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+
+.v1Link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #000;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+/* Variation 2: Educational Canvas */
+.v2Container {
+    background: #fdfdfd;
+    color: #1e293b;
+    min-height: 100vh;
+    font-family: 'Outfit', sans-serif;
+}
+
+.v2Header {
+    background: #fff;
+    border-bottom: 1px solid #f1f5f9;
+    padding: 2rem;
+}
+
+.v2TopBar {
+    max-width: 1000px;
+    margin: 0 auto 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.v2AcademyLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #64748b;
+}
+
+.v2Hero {
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+    padding-bottom: 3rem;
+}
+
+.v2Hero h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    color: #0f172a;
+}
+
+.v2Hero h1 span {
+    color: #3b82f6;
+}
+
+.v2Hero p {
+    font-size: 1.2rem;
+    color: #64748b;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.v2StepsSection {
+    background: #f8fafc;
+    padding: 6rem 2rem;
+}
+
+.v2StepsGrid {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+}
+
+@media (min-width: 768px) {
+    .v2StepsGrid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.v2StepCard {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.v2StepNum {
+    font-size: 3rem;
+    font-weight: 900;
+    opacity: 0.2;
+    font-family: 'Inter', sans-serif;
+}
+
+.v2StepContent h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: #0f172a;
+}
+
+.v2StepContent p {
+    font-size: 1rem;
+    color: #475569;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.v2StepSub {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #94a3b8;
+    letter-spacing: 1px;
+}
+
+.v2DeepDive {
+    padding: 6rem 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.v2DeepDiveBox {
+    background: #fff;
+    border-radius: 32px;
+    border: 1px solid #e2e8f0;
+    padding: 3rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+}
+
+.v2DeepHeader {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.v2DeepHeader h3 {
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+.v2DeepBody p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #475569;
+    margin-bottom: 2rem;
+}
+
+.v2BtnAction {
+    background: #3b82f6;
+    color: #fff;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+/* Variation 3: Trust-Built FinTech */
+.v3Container {
+    background: #001529;
+    color: #fff;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+}
+
+.v3Header {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.v3Status {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #10b981;
+}
+
+.v3StatusDot {
+    width: 6px;
+    height: 6px;
+    background: #10b981;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #10b981;
+}
+
+.v3Main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 6rem 2rem;
+}
+
+.v3Hero {
+    margin-bottom: 6rem;
+}
+
+.v3HeroContent h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 2rem;
+}
+
+.v3HeroContent p {
+    font-size: 1.1rem;
+    color: #94a3b8;
+    max-width: 600px;
+    margin-bottom: 3rem;
+}
+
+.v3Badge {
+    display: inline-block;
+    border: 1px solid #10b981;
+    color: #10b981;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+}
+
+.v3HeroActions {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.v3BtnPrimary {
+    background: #10b981;
+    color: #000;
+    border: none;
+    padding: 1rem 2rem;
+    font-weight: 700;
+    border-radius: 4px;
+}
+
+.v3BtnSecondary {
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 1rem 2rem;
+    font-weight: 700;
+    border-radius: 4px;
+}
+
+.v3Stats {
+    margin-bottom: 8rem;
+}
+
+.v3StatsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.v3StatItem {
+    background: #001529;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.v3StatVal {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #10b981;
+}
+
+.v3StatLab {
+    font-size: 0.6rem;
+    color: #64748b;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.v3ProofGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.v3ProofCard {
+    background: rgba(255, 255, 255, 0.02);
+    padding: 2.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+}
+
+.v3ProofIcon {
+    color: #10b981;
+    margin-bottom: 1.5rem;
+}
+
+.v3ProofCard h3 {
+    margin-bottom: 1rem;
+}
+
+.v3ProofCard p {
+    font-size: 0.9rem;
+    color: #64748b;
+    line-height: 1.6;
+}
+
+/* Variation 4: Community Pulse */
+.v4Container {
+    background: #fff;
+    color: #333;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+}
+
+.v4Header {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.v4JoinBtn {
+    background: #FF6B6B;
+    color: #fff;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 100px;
+    font-weight: 700;
+}
+
+.v4Main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+}
+
+.v4HeroCard {
+    background: #f9f9f9;
+    padding: 5rem;
+    border-radius: 40px;
+    text-align: center;
+    border: 2px solid #eee;
+}
+
+.v4AvatarStack {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.v4Avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 4px solid #fff;
+    margin-left: -12px;
+}
+
+.v4AvatarCount {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-left: -12px;
+    border: 4px solid #fff;
+}
+
+.v4HeroCard h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    color: #111;
+}
+
+.v4HeroCard p {
+    font-size: 1.25rem;
+    color: #666;
+    max-width: 600px;
+    margin: 0 auto 3rem;
+}
+
+.v4HeroBtn {
+    background: #111;
+    color: #fff;
+    border: none;
+    padding: 1.2rem 2.5rem;
+    border-radius: 100px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.v4FeatureGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 4rem;
+}
+
+.v4FeatureCard {
+    padding: 3rem;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 30px;
+    text-align: center;
+}
+
+.v4FeatureCard h3 {
+    margin: 1.5rem 0 1rem;
+    font-size: 1.5rem;
+}
+
+/* Variation 5: Minimalist Expanded */
+.v5Container {
+    background: #fff;
+    color: #000;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+}
+
+.v5Meta {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.v5ScrollHint {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #aaa;
+}
+
+.v5MainFull {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 12rem 2rem 5rem;
+}
+
+.v5FullSection {
+    margin-bottom: 18rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.v5SectionTag {
+    font-size: 0.65rem;
+    font-weight: 900;
+    color: #bbb;
+    letter-spacing: 4px;
+    margin-bottom: 1.5rem;
+}
+
+.v5FullSection h2 {
+    font-size: 6rem;
+    line-height: 0.9;
+    font-weight: 900;
+    letter-spacing: -5px;
+    margin-bottom: 2.5rem;
+}
+
+.v5FullSection p {
+    font-size: 1.6rem;
+    line-height: 1.4;
+    color: #333;
+    max-width: 700px;
+    margin-bottom: 3.5rem;
+}
+
+.v5SectionStats {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.v5StatBox {
+    border: 1px solid #000;
+    padding: 1rem 2rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.v5InfoBox {
+    margin-top: 3rem;
+    background: #f9f9f9;
+    padding: 2rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    font-size: 1rem;
+    color: #666;
+}
+
+.v5InfoBox a {
+    color: #000;
+    text-decoration: underline;
+    font-weight: 700;
+}
+
+.v5End {
+    text-align: center;
+    padding: 10rem 0;
+    border-top: 1px solid #eee;
+}
+
+.v5CTA {
+    background: #000;
+    color: #fff;
+    border: none;
+    padding: 1.5rem 4rem;
+    font-size: 1.2rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.v5CTA:hover {
+    transform: scale(1.05);
+}
+
+.v5End p {
+    margin-top: 2rem;
+    font-size: 0.8rem;
+    color: #ccc;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+@media (max-width: 768px) {
+    .v5FullSection h2 {
+        font-size: 3.5rem;
+        letter-spacing: -2px;
+    }
+
+    .v5FullSection p {
+        font-size: 1.25rem;
+    }
+}

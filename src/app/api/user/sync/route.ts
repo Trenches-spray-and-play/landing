@@ -83,6 +83,16 @@ export async function GET(request: Request) {
         });
 
         if (user) {
+            // Generate referral code if user doesn't have one
+            let referralCode = user.referralCode;
+            if (!referralCode) {
+                referralCode = await generateUniqueReferralCode();
+                await prisma.user.update({
+                    where: { id: user.id },
+                    data: { referralCode }
+                });
+            }
+
             // Calculate queue position (users created before this user)
             const position = await prisma.user.count({
                 where: {
@@ -109,6 +119,7 @@ export async function GET(request: Request) {
                 exists: true,
                 user: {
                     ...user,
+                    referralCode,
                     position,
                     boostPoints,
                     joinedAt,
@@ -205,6 +216,10 @@ export async function POST(request: Request) {
 
         if (user) {
             // ============ UPDATE EXISTING USER ============
+            // Save old referredById to check if we're setting it for the first time
+            const hadReferrerBefore = !!user.referredById;
+            const isSettingReferrerNow = referrerId && !hadReferrerBefore;
+
             user = await prisma.user.update({
                 where: { id: user.id },
                 data: {
@@ -213,7 +228,7 @@ export async function POST(request: Request) {
                     walletSol: walletSol || user.walletSol,
                     walletEvm: walletEvm || user.walletEvm,
                     // Only set referrer if not already set and referrer is valid
-                    ...(referrerId && !user.referredById ? { referredById: referrerId } : {})
+                    ...(isSettingReferrerNow ? { referredById: referrerId } : {})
                 }
             });
 
@@ -242,7 +257,7 @@ export async function POST(request: Request) {
             }
 
             // Award referrer bonus if this is the first time setting referrer
-            if (referrerId && referrerValid && !user.referredById) {
+            if (isSettingReferrerNow && referrerValid && referrerId) {
                 await prisma.user.update({
                     where: { id: referrerId },
                     data: { beliefScore: { increment: 50 } }
